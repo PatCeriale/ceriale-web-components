@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Components Demo</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 24px;
+            font-family: var(--font-family-primary);
+            background: var(--surface-background);
+            color: var(--surface-on-surface);
+            line-height: 1.6;
+        }
+
+        .demo-section {
+            margin-bottom: 48px;
+            padding: 24px;
+            border: 1px solid var(--color-grey-200);
+            border-radius: 8px;
+            background: var(--surface-container-lowest);
+        }
+
+        .demo-section h2 {
+            margin-top: 0;
+            color: var(--color-primary-600);
+        }
+
+        .demo-grid {
+            display: grid;
+            gap: 16px;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            margin-bottom: 24px;
+        }
+
+        .button-row {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            margin-bottom: 16px;
+        }
+
+        .theme-toggle {
+            position: fixed;
+            top: 24px;
+            right: 24px;
+            z-index: 100;
+        }
+
+        .input-demo {
+            max-width: 400px;
+            margin-bottom: 16px;
+        }
+
+        .card-demo {
+            max-width: 350px;
+        }
+
+        .size-demo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .color-demo {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 16px;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 16px;
+            }
+
+            .demo-section {
+                padding: 16px;
+            }
+
+            .button-row {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .theme-toggle {
+                position: static;
+                margin-bottom: 16px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="theme-toggle">
+        <mwc-button id="theme-toggle-btn" variant="outlined">
+            🌙 Dark Mode
+        </mwc-button>
+    </div>
+
+    <h1>Web Components Demo</h1>
+    <p>Explore our collection of web components built with Lit.</p>
+
+    <section class="demo-section">
+        <h2>Buttons</h2>
+
+        <h3>Variants</h3>
+        <div class="button-row">
+            <mwc-button variant="contained" color="primary">Contained</mwc-button>
+            <mwc-button variant="outlined" color="primary">Outlined</mwc-button>
+            <mwc-button variant="text" color="primary">Text</mwc-button>
+        </div>
+
+        <h3>Colors</h3>
+        <div class="color-demo">
+            <mwc-button variant="contained" color="primary">Primary</mwc-button>
+            <mwc-button variant="contained" color="secondary">Secondary</mwc-button>
+            <mwc-button variant="contained" color="success">Success</mwc-button>
+            <mwc-button variant="contained" color="warning">Warning</mwc-button>
+            <mwc-button variant="contained" color="error">Error</mwc-button>
+        </div>
+
+        <h3>Sizes</h3>
+        <div class="size-demo">
+            <mwc-button size="small" variant="contained">Small</mwc-button>
+            <mwc-button size="medium" variant="contained">Medium</mwc-button>
+            <mwc-button size="large" variant="contained">Large</mwc-button>
+        </div>
+
+        <h3>States</h3>
+        <div class="button-row">
+            <mwc-button variant="contained" color="primary" disabled>Disabled</mwc-button>
+            <mwc-button variant="contained" color="primary" loading>Loading</mwc-button>
+            <mwc-button variant="contained" color="primary" href="https://google.com" target="_blank">Link
+                Button</mwc-button>
+        </div>
+    </section>
+
+    <section class="demo-section">
+        <h2>Text Inputs</h2>
+
+        <h3>Variants</h3>
+        <div class="input-demo">
+            <mwc-input variant="outlined" label="Outlined Input" placeholder="Enter some text"
+                helper-text="This is an outlined input">
+            </mwc-input>
+        </div>
+
+        <div class="input-demo">
+            <mwc-input variant="filled" label="Filled Input" placeholder="Enter some text"
+                helper-text="This is a filled input">
+            </mwc-input>
+        </div>
+
+        <div class="input-demo">
+            <mwc-input variant="standard" label="Standard Input" placeholder="Enter some text"
+                helper-text="This is a standard input">
+            </mwc-input>
+        </div>
+
+        <h3>Input Types</h3>
+        <div class="input-demo">
+            <mwc-input type="email" label="Email" placeholder="your.email@example.com"
+                helper-text="We'll never share your email">
+            </mwc-input>
+        </div>
+
+        <div class="input-demo">
+            <mwc-input type="password" label="Password" placeholder="Enter password"
+                helper-text="Use a strong password">
+            </mwc-input>
+        </div>
+
+        <div class="input-demo">
+            <mwc-input type="number" label="Age" placeholder="Enter your age" helper-text="Must be 18 or older">
+            </mwc-input>
+        </div>
+
+        <h3>States</h3>
+        <div class="input-demo">
+            <mwc-input label="Required Field" placeholder="This is required" required
+                helper-text="This field is required">
+            </mwc-input>
+        </div>
+
+        <div class="input-demo">
+            <mwc-input label="Error State" placeholder="Enter valid email" value="invalid-email" error
+                error-text="Please enter a valid email address">
+            </mwc-input>
+        </div>
+
+        <div class="input-demo">
+            <mwc-input label="Disabled Input" placeholder="Cannot edit" disabled value="Disabled value">
+            </mwc-input>
+        </div>
+    </section>
+
+    <section class="demo-section">
+        <h2>Toggle Switches</h2>
+
+        <h3>Sizes</h3>
+        <div class="size-demo">
+            <mwc-toggle size="small">Small</mwc-toggle>
+            <mwc-toggle size="medium">Medium</mwc-toggle>
+            <mwc-toggle size="large">Large</mwc-toggle>
+        </div>
+
+        <h3>Colors</h3>
+        <div class="color-demo">
+            <mwc-toggle color="primary" checked>Primary</mwc-toggle>
+            <mwc-toggle color="secondary" checked>Secondary</mwc-toggle>
+            <mwc-toggle color="success" checked>Success</mwc-toggle>
+            <mwc-toggle color="warning" checked>Warning</mwc-toggle>
+            <mwc-toggle color="error" checked>Error</mwc-toggle>
+        </div>
+
+        <h3>States</h3>
+        <div style="display: flex; flex-direction: column; gap: 12px; max-width: 300px;">
+            <mwc-toggle>Default State</mwc-toggle>
+            <mwc-toggle checked>Checked State</mwc-toggle>
+            <mwc-toggle disabled>Disabled State</mwc-toggle>
+            <mwc-toggle checked disabled>Checked & Disabled</mwc-toggle>
+        </div>
+
+        <h3>With Icons</h3>
+        <div style="display: flex; flex-direction: column; gap: 16px; max-width: 350px;">
+            <mwc-toggle checked>
+                <span slot="start-icon">🌙</span>
+                Dark Mode
+                <span slot="end-icon">☀️</span>
+            </mwc-toggle>
+
+            <mwc-toggle color="success">
+                <span slot="start-icon">📴</span>
+                Notifications
+                <span slot="end-icon">🔔</span>
+            </mwc-toggle>
+
+            <mwc-toggle color="warning">
+                <span slot="start-icon">🔇</span>
+                Sound
+                <span slot="end-icon">🔊</span>
+            </mwc-toggle>
+        </div>
+
+        <h3>Settings Panel Example</h3>
+        <div
+            style="display: flex; flex-direction: column; gap: 16px; max-width: 400px; padding: 20px; background: var(--surface-container-low); border-radius: 8px;">
+            <h4 style="margin: 0 0 8px 0; color: var(--color-primary-600);">Privacy & Security</h4>
+
+            <div style="display: flex; align-items: center; justify-content: space-between;">
+                <div>
+                    <div style="font-weight: 500;">Analytics Tracking</div>
+                    <div style="font-size: 12px; color: var(--color-grey-600);">Help improve our service</div>
+                </div>
+                <mwc-toggle name="analytics" value="enabled" color="primary" checked></mwc-toggle>
+            </div>
+
+            <div style="display: flex; align-items: center; justify-content: space-between;">
+                <div>
+                    <div style="font-weight: 500;">Marketing Emails</div>
+                    <div style="font-size: 12px; color: var(--color-grey-600);">Receive product updates</div>
+                </div>
+                <mwc-toggle name="marketing" value="subscribed" color="secondary"></mwc-toggle>
+            </div>
+
+            <div style="display: flex; align-items: center; justify-content: space-between;">
+                <div>
+                    <div style="font-weight: 500;">Auto Sync</div>
+                    <div style="font-size: 12px; color: var(--color-grey-600);">Sync data automatically</div>
+                </div>
+                <mwc-toggle name="sync" value="enabled" color="success" checked></mwc-toggle>
+            </div>
+        </div>
+    </section>
+
+    <section class="demo-section">
+        <h2>Cards</h2>
+
+        <div class="demo-grid">
+            <mwc-card class="card-demo" variant="elevated">
+                <div slot="header">
+                    <h3>Elevated Card</h3>
+                </div>
+                <p>This card has an elevated appearance with shadow. Perfect for highlighting important content or
+                    creating visual separation.</p>
+                <div slot="actions">
+                    <mwc-button variant="text" color="primary">Read More</mwc-button>
+                    <mwc-button variant="text">Share</mwc-button>
+                </div>
+            </mwc-card>
+
+            <mwc-card class="card-demo" variant="outlined">
+                <div slot="header">
+                    <h3>Outlined Card</h3>
+                </div>
+                <p>This card uses a border instead of shadow. Great for when you want definition without too much
+                    emphasis.</p>
+                <div slot="actions">
+                    <mwc-button variant="outlined" color="secondary">Action</mwc-button>
+                </div>
+            </mwc-card>
+
+            <mwc-card class="card-demo" variant="filled">
+                <div slot="header">
+                    <h3>Filled Card</h3>
+                </div>
+                <p>This card has a filled background. Useful for grouping related content with subtle visual separation.
+                </p>
+                <div slot="actions">
+                    <mwc-button variant="contained" color="success">Done</mwc-button>
+                </div>
+            </mwc-card>
+        </div>
+
+        <h3>Interactive Card</h3>
+        <mwc-card class="card-demo" variant="outlined" clickable>
+            <div slot="header">
+                <h3>Clickable Card</h3>
+            </div>
+            <p>This entire card is clickable. Notice the hover and focus states. Perfect for navigation cards or
+                selectable options.</p>
+        </mwc-card>
+
+        <h3>Card with Media</h3>
+        <mwc-card class="card-demo" variant="elevated">
+            <div slot="media"
+                style="height: 200px; background: linear-gradient(45deg, var(--color-primary-500), var(--color-secondary-500)); display: flex; align-items: center; justify-content: center; color: white;">
+                <span style="font-size: 24px;">📸 Image Placeholder</span>
+            </div>
+            <div slot="header">
+                <h3>Card with Media</h3>
+            </div>
+            <p>Cards can contain media content like images, videos, or rich content in the media slot.</p>
+            <div slot="actions">
+                <mwc-button variant="text" color="primary">View Details</mwc-button>
+                <mwc-button variant="outlined" color="error">Delete</mwc-button>
+            </div>
+        </mwc-card>
+    </section>
+
+    <section class="demo-section">
+        <h2>Form Integration</h2>
+        <p>All components work together seamlessly in forms:</p>
+
+        <form id="demo-form" style="max-width: 500px;">
+            <div style="display: grid; gap: 16px;">
+                <mwc-input name="name" label="Full Name" placeholder="Enter your full name" required
+                    helper-text="First and last name">
+                </mwc-input>
+
+                <mwc-input name="email" type="email" label="Email Address" placeholder="your.email@example.com" required
+                    helper-text="We'll use this to contact you">
+                </mwc-input>
+
+                <mwc-input name="phone" type="tel" label="Phone Number" placeholder="+1 (555) 123-4567"
+                    helper-text="Optional">
+                </mwc-input>
+
+                <mwc-input name="message" label="Message" placeholder="Tell us about your project..."
+                    helper-text="What can we help you with?">
+                </mwc-input>
+
+                <div style="display: flex; gap: 12px; margin-top: 16px;">
+                    <mwc-button type="submit" variant="contained" color="primary">
+                        Send Message
+                    </mwc-button>
+                    <mwc-button type="button" variant="outlined">
+                        Clear Form
+                    </mwc-button>
+                </div>
+            </div>
+        </form>
+    </section>
+
+    <!-- Import the component library -->
+    <script type="module" src="./dist/index.js"></script>
+
+    <script type="module">
+        import { applyTheme, lightTheme, darkTheme } from './dist/index.js';
+
+        let isDarkMode = false;
+        const toggleBtn = document.getElementById('theme-toggle-btn');
+
+        // Initialize with light theme
+        applyTheme(lightTheme);
+
+        // Theme toggle functionality
+        toggleBtn.addEventListener('mwc-button-click', () => {
+            isDarkMode = !isDarkMode;
+            applyTheme(isDarkMode ? darkTheme : lightTheme);
+            toggleBtn.textContent = isDarkMode ? '☀️ Light Mode' : '🌙 Dark Mode';
+        });
+
+        // Form handling example
+        const demoForm = document.getElementById('demo-form');
+        demoForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const formData = new FormData(demoForm);
+
+            console.log('Form submitted with data:', Object.fromEntries(formData));
+            alert('Form submitted! Check the console for details.');
+        });
+
+        // Clear form functionality
+        demoForm.querySelector('mwc-button[type="button"]').addEventListener('mwc-button-click', () => {
+            demoForm.querySelectorAll('mwc-input').forEach(input => {
+                input.value = '';
+            });
+        });
+
+        // Card click handling
+        document.querySelectorAll('mwc-card[clickable]').forEach(card => {
+            card.addEventListener('mwc-card-click', () => {
+                alert('Card clicked! This could navigate to a detail page.');
+            });
+        });
+
+        // Input event handling examples
+        document.querySelectorAll('mwc-input').forEach(input => {
+            input.addEventListener('mwc-input', (e) => {
+                console.log(`Input ${input.label} changed:`, e.detail.value);
+            });
+
+            input.addEventListener('mwc-focus', (e) => {
+                console.log(`Input ${input.label} focused`);
+            });
+        });
+
+        // Toggle event handling examples
+        document.querySelectorAll('mwc-toggle').forEach(toggle => {
+            toggle.addEventListener('mwc-toggle-change', (e) => {
+                console.log(`Toggle "${toggle.textContent.trim()}" changed:`, e.detail);
+
+                // Special handling for settings panel toggles
+                if (toggle.name === 'sync' && e.detail.checked) {
+                    console.log('Auto sync enabled - syncing data...');
+                    // Simulate sync process
+                    setTimeout(() => {
+                        console.log('Data sync completed');
+                    }, 1000);
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

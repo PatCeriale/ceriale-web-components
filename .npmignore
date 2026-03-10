@@ -1,0 +1,46 @@
+# Source files (keep only dist)
+src/
+.storybook/
+stories/
+jest-mocks/
+
+# Development files
+*.config.*
+*.setup.*
+.eslintrc.*
+jest.config.*
+tsconfig.json
+demo.html
+.vscode/
+.idea/
+
+# Documentation (keep README and LICENSE)
+.github/
+docs/
+
+# Testing
+coverage/
+**/__tests__/
+**/*.test.*
+**/*.spec.*
+
+# Build artifacts we don't want
+*.tsbuildinfo
+.nyc_output
+storybook-static/
+
+# OS and IDE
+.DS_Store
+Thumbs.db
+*~
+*.swp
+*.swo
+
+# Logs and temp
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+tmp/
+temp/

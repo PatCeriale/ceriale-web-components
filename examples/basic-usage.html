@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ceriale Web Components Example</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 24px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .section {
+            margin-bottom: 32px;
+        }
+
+        .component-row {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+
+        mwc-card {
+            max-width: 300px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Ceriale Web Components Example</h1>
+
+        <div class="section">
+            <h2>Buttons</h2>
+            <div class="component-row">
+                <mwc-button variant="contained" color="primary">Primary</mwc-button>
+                <mwc-button variant="outlined" color="secondary">Secondary</mwc-button>
+                <mwc-button variant="text" color="success">Success</mwc-button>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Toggle Switches</h2>
+            <div class="component-row">
+                <mwc-toggle checked>
+                    <span slot="start-icon">🌙</span>
+                    Dark Mode
+                    <span slot="end-icon">☀️</span>
+                </mwc-toggle>
+                <mwc-toggle color="success">
+                    <span slot="start-icon">🔔</span>
+                    Notifications
+                </mwc-toggle>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Input Field</h2>
+            <div class="component-row">
+                <mwc-input label="Your Name" placeholder="Enter your name" helper-text="This field is required">
+                </mwc-input>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Card</h2>
+            <mwc-card variant="elevated">
+                <div slot="header">
+                    <h3>Example Card</h3>
+                </div>
+                <p>This is an example of how to use the Ceriale Web Components library in your project.</p>
+                <div slot="actions">
+                    <mwc-button variant="text" color="primary">Learn More</mwc-button>
+                    <mwc-button variant="outlined">Action</mwc-button>
+                </div>
+            </mwc-card>
+        </div>
+    </div>
+
+    <!-- Import from npm package -->
+    <script type="module">
+        // If installed via npm:
+        // import '@ceriale/ceriale-web-components';
+
+        // For this example, import from local dist:
+        import '../dist/index.js';
+
+        // Apply dark theme example
+        import { darkTheme, applyTheme } from '../dist/index.js';
+
+        // Add theme toggle functionality
+        document.querySelector('mwc-toggle').addEventListener('mwc-toggle-change', (e) => {
+            if (e.detail.checked) {
+                applyTheme(darkTheme);
+                document.body.style.backgroundColor = '#121212';
+                document.querySelector('.container').style.backgroundColor = '#1e1e1e';
+                document.querySelector('.container').style.color = '#ffffff';
+            } else {
+                // Reset to light theme
+                window.location.reload();
+            }
+        });
+    </script>
+</body>
+
+</html>
