@@ -1,5 +1,5 @@
 {
-  "name": "@ceriale/ceriale-web-components",
+  "name": "ceriale-web-components",
   "version": "0.1.0",
   "description": "A modern web component library built with Lit and TypeScript",
   "type": "module",

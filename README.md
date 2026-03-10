@@ -20,7 +20,7 @@ This is a personal testing package. Use at your own risk in production.
 ### Installation
 
 ```bash
-npm install @ceriale/ceriale-web-components
+npm install ceriale-web-components
 ```
 
 ### Basic Usage
@@ -31,7 +31,7 @@ npm install @ceriale/ceriale-web-components
   <head>
     <script
       type="module"
-      src="node_modules/@ceriale/ceriale-web-components/dist/index.js"
+      src="node_modules/ceriale-web-components/dist/index.js"
     ></script>
   </head>
   <body>
