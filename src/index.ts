@@ -7,6 +7,9 @@ export { Card } from './components/card/card.js';
 export { Input } from './components/input/input.js';
 export { Toggle } from './components/toggle/toggle.js';
 
+// Icons
+export * from './components/icons/index.js';
+
 // Utilities
 export * from './utils/index.js';
 export * from './styles/base.js';

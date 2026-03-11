@@ -15,7 +15,10 @@ const preview: Preview = {
       },
     },
     docs: {
-      extractComponentDescription: (component, { notes }) => {
+      extractComponentDescription: (
+        _component: any,
+        { notes }: { notes?: string | { markdown?: string; text?: string } },
+      ) => {
         if (notes) {
           return typeof notes === 'string'
             ? notes
