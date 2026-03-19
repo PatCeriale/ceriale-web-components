@@ -1,0 +1,198 @@
+/* Global styles for Storybook */
+
+/* Import your typography tokens and set up base styles */
+:root {
+  /* Base typography CSS custom properties */
+  --font-family-primary: "Segoe UI", "Roboto", "Helvetica Neue", Arial, sans-serif;
+  --font-family-monospace: "Segoe UI Mono", "Roboto Mono", "Courier New", monospace;
+  
+  /* Font weights */
+  --font-weight-light: 300;
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  
+  /* Font sizes */
+  --font-size-xs: 0.75rem;  /* 12px */
+  --font-size-sm: 0.875rem; /* 14px */
+  --font-size-base: 1rem;    /* 16px */
+  --font-size-lg: 1.125rem;  /* 18px */
+  --font-size-xl: 1.25rem;   /* 20px */
+  --font-size-2xl: 1.5rem;   /* 24px */
+  --font-size-3xl: 1.875rem; /* 30px */
+  --font-size-4xl: 2.25rem;  /* 36px */
+  --font-size-5xl: 3rem;     /* 48px */
+  --font-size-6xl: 3.75rem;  /* 60px */
+  
+  /* Line heights */
+  --line-height-tight: 1.25;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.75;
+  
+  /* Letter spacing */
+  --letter-spacing-tight: -0.025em;
+  --letter-spacing-normal: 0em;
+  --letter-spacing-wide: 0.025em;
+  --letter-spacing-wider: 0.05em;
+  --letter-spacing-widest: 0.1em;
+}
+
+/* Apply base typography to Storybook's document and story containers */
+html,
+body,
+#storybook-root,
+.sb-show-main {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-normal);
+  letter-spacing: var(--letter-spacing-normal);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Ensure all web components inherit the font family */
+* {
+  font-family: inherit;
+}
+
+/* Specific targeting for your Material Web Components */
+[class*="mwc-"],
+mwc-box,
+mwc-container,
+mwc-grid,
+mwc-grid-item,
+mwc-stack {
+  font-family: var(--font-family-primary);
+}
+
+/* Typography scale classes for use in stories */
+.typography-display-large {
+  font-size: 3.5rem;
+  line-height: 1.12;
+  font-weight: 400;
+  letter-spacing: -0.025em;
+}
+
+.typography-display-medium {
+  font-size: 2.8125rem;
+  line-height: 1.16;
+  font-weight: 400;
+  letter-spacing: 0em;
+}
+
+.typography-display-small {
+  font-size: 2.25rem;
+  line-height: 1.22;
+  font-weight: 400;
+  letter-spacing: 0em;
+}
+
+.typography-headline-large {
+  font-size: 2rem;
+  line-height: 1.25;
+  font-weight: 400;
+  letter-spacing: 0em;
+}
+
+.typography-headline-medium {
+  font-size: 1.75rem;
+  line-height: 1.29;
+  font-weight: 400;
+  letter-spacing: 0em;
+}
+
+.typography-headline-small {
+  font-size: 1.5rem;
+  line-height: 1.33;
+  font-weight: 400;
+  letter-spacing: 0em;
+}
+
+.typography-title-large {
+  font-size: 1.375rem;
+  line-height: 1.27;
+  font-weight: 400;
+  letter-spacing: 0em;
+}
+
+.typography-title-medium {
+  font-size: 1rem;
+  line-height: 1.5;
+  font-weight: 500;
+  letter-spacing: 0.009375em;
+}
+
+.typography-title-small {
+  font-size: 0.875rem;
+  line-height: 1.43;
+  font-weight: 500;
+  letter-spacing: 0.00714em;
+}
+
+.typography-body-large {
+  font-size: 1rem;
+  line-height: 1.5;
+  font-weight: 400;
+  letter-spacing: 0.009375em;
+}
+
+.typography-body-medium {
+  font-size: 0.875rem;
+  line-height: 1.43;
+  font-weight: 400;
+  letter-spacing: 0.01786em;
+}
+
+.typography-body-small {
+  font-size: 0.75rem;
+  line-height: 1.33;
+  font-weight: 400;
+  letter-spacing: 0.03333em;
+}
+
+.typography-label-large {
+  font-size: 0.875rem;
+  line-height: 1.43;
+  font-weight: 500;
+  letter-spacing: 0.00714em;
+}
+
+.typography-label-medium {
+  font-size: 0.75rem;
+  line-height: 1.33;
+  font-weight: 500;
+  letter-spacing: 0.03333em;
+}
+
+.typography-label-small {
+  font-size: 0.6875rem;
+  line-height: 1.45;
+  font-weight: 500;
+  letter-spacing: 0.03636em;
+}
+
+/* Monospace for code examples in stories */
+code,
+pre,
+.font-monospace {
+  font-family: var(--font-family-monospace);
+}
+
+/* Utility classes for quick typography adjustments in stories */
+.font-light { font-weight: var(--font-weight-light); }
+.font-regular { font-weight: var(--font-weight-regular); }
+.font-medium { font-weight: var(--font-weight-medium); }
+.font-semibold { font-weight: var(--font-weight-semibold); }
+.font-bold { font-weight: var(--font-weight-bold); }
+
+.text-xs { font-size: var(--font-size-xs); }
+.text-sm { font-size: var(--font-size-sm); }
+.text-base { font-size: var(--font-size-base); }
+.text-lg { font-size: var(--font-size-lg); }
+.text-xl { font-size: var(--font-size-xl); }
+.text-2xl { font-size: var(--font-size-2xl); }
+.text-3xl { font-size: var(--font-size-3xl); }
+.text-4xl { font-size: var(--font-size-4xl); }
+.text-5xl { font-size: var(--font-size-5xl); }
+.text-6xl { font-size: var(--font-size-6xl); }

@@ -1,6 +1,7 @@
 import type { Preview } from '@storybook/web-components';
 import { setCustomElementsManifest } from '@storybook/web-components';
 import { applyTheme, lightTheme, darkTheme } from '../src/index.js';
+import './global.css';
 
 // Apply default theme
 applyTheme(lightTheme);

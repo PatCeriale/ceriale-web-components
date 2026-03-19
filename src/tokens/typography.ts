@@ -1,8 +1,8 @@
 // Typography tokens
 export const typography = {
   fontFamily: {
-    primary: '"Roboto", "Helvetica Neue", Arial, sans-serif',
-    monospace: '"Roboto Mono", "Courier New", monospace',
+    primary: '"Segoe UI", "Roboto", "Helvetica Neue", Arial, sans-serif',
+    monospace: '"Segoe UI Mono", "Roboto Mono", "Courier New", monospace',
   },
   fontWeight: {
     light: 300,

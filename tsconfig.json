@@ -24,6 +24,6 @@
     "forceConsistentCasingInFileNames": true,
     "types": ["jest", "node"]
   },
-  "include": ["src", "stories", "**/__tests__/**/*"],
+  "include": ["src", "stories", ".storybook", "**/__tests__/**/*"],
   "exclude": ["node_modules", "dist"]
 }
