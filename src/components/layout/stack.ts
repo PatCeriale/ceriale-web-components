@@ -11,7 +11,11 @@ import {
 } from './types.js';
 
 // Stack direction options - Material Design 3 compliant
-export type StackDirection = 'column' | 'row' | 'column-reverse' | 'row-reverse';
+export type StackDirection =
+  | 'column'
+  | 'row'
+  | 'column-reverse'
+  | 'row-reverse';
 
 // Stack wrapping options
 export type StackWrap = 'nowrap' | 'wrap' | 'wrap-reverse';
@@ -19,21 +23,34 @@ export type StackWrap = 'nowrap' | 'wrap' | 'wrap-reverse';
 // Stack alignment options
 export type StackAlign = 'start' | 'end' | 'center' | 'stretch' | 'baseline';
 
-// Stack justification options  
-export type StackJustify = 'start' | 'end' | 'center' | 'space-between' | 'space-around' | 'space-evenly';
+// Stack justification options
+export type StackJustify =
+  | 'start'
+  | 'end'
+  | 'center'
+  | 'space-between'
+  | 'space-around'
+  | 'space-evenly';
 
 // Stack spacing presets
-export type StackSpacing = 'none' | 'xs' | 'small' | 'medium' | 'large' | 'xl' | 'xxl';
+export type StackSpacing =
+  | 'none'
+  | 'xs'
+  | 'small'
+  | 'medium'
+  | 'large'
+  | 'xl'
+  | 'xxl';
 
 /**
  * Material Design 3 Stack Component
- * 
+ *
  * A flexible container that distributes children in a single direction with consistent spacing.
  * Built with Material Design 3 principles, full accessibility support, and seamless theme integration.
  *
  * @element mwc-stack
  * @slot - Default slot for stack items
- * 
+ *
  * @fires stack-change - Fired when stack configuration changes
  * @fires stack-click - Fired when interactive stack is clicked
  * @fires stack-focus - Fired when stack receives focus
@@ -57,32 +74,40 @@ export class Stack extends LitElement {
     :host {
       /* Material Design 3 Design Tokens */
       --_stack-transition-duration: var(--stack-transition-duration, 250ms);
-      --_stack-transition-easing: cubic-bezier(0.4, 0.0, 0.2, 1);
-      --_stack-border-radius: var(--stack-border-radius, var(--border-radius-medium, 12px));
+      --_stack-transition-easing: cubic-bezier(0.4, 0, 0.2, 1);
+      --_stack-border-radius: var(
+        --stack-border-radius,
+        var(--border-radius-medium, 12px)
+      );
       --_stack-background-color: var(--stack-background-color, transparent);
       --_stack-border-color: var(--stack-border-color, transparent);
       --_stack-gap: var(--stack-gap, var(--spacing-3, 16px));
       --_stack-padding: var(--stack-padding, 0);
-      --_stack-focus-outline: var(--stack-focus-outline, 2px solid var(--color-primary-600, #1976d2));
+      --_stack-focus-outline: var(
+        --stack-focus-outline,
+        2px solid var(--color-primary-600, #1976d2)
+      );
       --_stack-hover-transform: var(--stack-hover-transform, translateY(-1px));
 
       display: block;
       width: 100%;
       box-sizing: border-box;
-      
+
       background-color: var(--_stack-background-color);
       border: 1px solid var(--_stack-border-color);
       border-radius: var(--_stack-border-radius);
       padding: var(--_stack-padding);
-      
-      transition: 
-        transform var(--_stack-transition-duration) var(--_stack-transition-easing),
-        box-shadow var(--_stack-transition-duration) var(--_stack-transition-easing),
-        background-color var(--_stack-transition-duration) var(--_stack-transition-easing);
+
+      transition: transform var(--_stack-transition-duration)
+          var(--_stack-transition-easing),
+        box-shadow var(--_stack-transition-duration)
+          var(--_stack-transition-easing),
+        background-color var(--_stack-transition-duration)
+          var(--_stack-transition-easing);
 
       /* Accessibility */
       outline: none;
-      
+
       /* RTL Support */
       direction: inherit;
 
@@ -102,39 +127,89 @@ export class Stack extends LitElement {
     }
 
     /* Direction Variants */
-    :host([direction='column']) .stack-container { flex-direction: column; }
-    :host([direction='row']) .stack-container { flex-direction: row; }
-    :host([direction='column-reverse']) .stack-container { flex-direction: column-reverse; }
-    :host([direction='row-reverse']) .stack-container { flex-direction: row-reverse; }
+    :host([direction='column']) .stack-container {
+      flex-direction: column;
+    }
+    :host([direction='row']) .stack-container {
+      flex-direction: row;
+    }
+    :host([direction='column-reverse']) .stack-container {
+      flex-direction: column-reverse;
+    }
+    :host([direction='row-reverse']) .stack-container {
+      flex-direction: row-reverse;
+    }
 
     /* Wrap Variants */
-    :host([wrap='nowrap']) .stack-container { flex-wrap: nowrap; }
-    :host([wrap='wrap']) .stack-container { flex-wrap: wrap; }
-    :host([wrap='wrap-reverse']) .stack-container { flex-wrap: wrap-reverse; }
+    :host([wrap='nowrap']) .stack-container {
+      flex-wrap: nowrap;
+    }
+    :host([wrap='wrap']) .stack-container {
+      flex-wrap: wrap;
+    }
+    :host([wrap='wrap-reverse']) .stack-container {
+      flex-wrap: wrap-reverse;
+    }
 
     /* Alignment Options */
-    :host([align='start']) .stack-container { align-items: flex-start; }
-    :host([align='end']) .stack-container { align-items: flex-end; }
-    :host([align='center']) .stack-container { align-items: center; }
-    :host([align='stretch']) .stack-container { align-items: stretch; }
-    :host([align='baseline']) .stack-container { align-items: baseline; }
+    :host([align='start']) .stack-container {
+      align-items: flex-start;
+    }
+    :host([align='end']) .stack-container {
+      align-items: flex-end;
+    }
+    :host([align='center']) .stack-container {
+      align-items: center;
+    }
+    :host([align='stretch']) .stack-container {
+      align-items: stretch;
+    }
+    :host([align='baseline']) .stack-container {
+      align-items: baseline;
+    }
 
     /* Justification Options */
-    :host([justify='start']) .stack-container { justify-content: flex-start; }
-    :host([justify='end']) .stack-container { justify-content: flex-end; }
-    :host([justify='center']) .stack-container { justify-content: center; }
-    :host([justify='space-between']) .stack-container { justify-content: space-between; }
-    :host([justify='space-around']) .stack-container { justify-content: space-around; }
-    :host([justify='space-evenly']) .stack-container { justify-content: space-evenly; }
+    :host([justify='start']) .stack-container {
+      justify-content: flex-start;
+    }
+    :host([justify='end']) .stack-container {
+      justify-content: flex-end;
+    }
+    :host([justify='center']) .stack-container {
+      justify-content: center;
+    }
+    :host([justify='space-between']) .stack-container {
+      justify-content: space-between;
+    }
+    :host([justify='space-around']) .stack-container {
+      justify-content: space-around;
+    }
+    :host([justify='space-evenly']) .stack-container {
+      justify-content: space-evenly;
+    }
 
     /* Spacing Presets */
-    :host([spacing='none']) .stack-container { gap: 0; }
-    :host([spacing='xs']) .stack-container { gap: var(--spacing-1, 4px); }
-    :host([spacing='small']) .stack-container { gap: var(--spacing-2, 8px); }
-    :host([spacing='medium']) .stack-container { gap: var(--spacing-3, 16px); }
-    :host([spacing='large']) .stack-container { gap: var(--spacing-4, 24px); }
-    :host([spacing='xl']) .stack-container { gap: var(--spacing-5, 32px); }
-    :host([spacing='xxl']) .stack-container { gap: var(--spacing-6, 48px); }
+    :host([spacing='none']) .stack-container {
+      gap: 0;
+    }
+    :host([spacing='xs']) .stack-container {
+      gap: var(--spacing-1, 4px);
+    }
+    :host([spacing='small']) .stack-container {
+      gap: var(--spacing-2, 8px);
+    }
+    :host([spacing='medium']) .stack-container {
+      gap: var(--spacing-3, 16px);
+    }
+    :host([spacing='large']) .stack-container {
+      gap: var(--spacing-4, 24px);
+    }
+    :host([spacing='xl']) .stack-container {
+      gap: var(--spacing-5, 32px);
+    }
+    :host([spacing='xxl']) .stack-container {
+      gap: var(--spacing-6, 48px);
+    }
 
     /* Size Variants - Material Design 3 Density Scale */
     :host([size='small']) {
@@ -227,13 +302,22 @@ export class Stack extends LitElement {
       left: -100%;
       width: 100%;
       height: 2px;
-      background: linear-gradient(90deg, transparent, var(--color-primary-600, #1976d2), transparent);
+      background: linear-gradient(
+        90deg,
+        transparent,
+        var(--color-primary-600, #1976d2),
+        transparent
+      );
       animation: loading-shimmer 1.5s infinite;
     }
 
     @keyframes loading-shimmer {
-      0% { left: -100%; }
-      100% { left: 100%; }
+      0% {
+        left: -100%;
+      }
+      100% {
+        left: 100%;
+      }
     }
 
     /* Disabled State */
@@ -246,22 +330,36 @@ export class Stack extends LitElement {
 
     /* Responsive Behavior - Mobile First */
     @media (max-width: 599px) {
-      :host([responsive]) .stack-container { flex-direction: column; }
-      :host([interactive]) { min-height: 44px; }
-      :host { --_stack-gap: max(var(--spacing-3, 16px), 12px); }
+      :host([responsive]) .stack-container {
+        flex-direction: column;
+      }
+      :host([interactive]) {
+        min-height: 44px;
+      }
+      :host {
+        --_stack-gap: max(var(--spacing-3, 16px), 12px);
+      }
     }
 
     @media (min-width: 600px) and (max-width: 899px) {
-      :host([responsive][direction='row']) .stack-container { flex-direction: row; }
+      :host([responsive][direction='row']) .stack-container {
+        flex-direction: row;
+      }
     }
 
     @media (min-width: 900px) {
-      :host([responsive][direction='row']) .stack-container { flex-direction: row; }
+      :host([responsive][direction='row']) .stack-container {
+        flex-direction: row;
+      }
     }
 
     /* Children Behavior Modifiers */
-    :host([distribute]) .stack-container { align-items: stretch; }
-    :host([distribute]) ::slotted(*) { flex: 1 1 auto; }
+    :host([distribute]) .stack-container {
+      align-items: stretch;
+    }
+    :host([distribute]) ::slotted(*) {
+      flex: 1 1 auto;
+    }
 
     :host([equal-width][direction='row']) ::slotted(*),
     :host([equal-width]:not([direction])) ::slotted(*) {
@@ -282,7 +380,9 @@ export class Stack extends LitElement {
     }
 
     /* Dividers Between Items */
-    :host([dividers]) { position: relative; }
+    :host([dividers]) {
+      position: relative;
+    }
     :host([dividers]) .stack-container::before {
       content: '';
       position: absolute;
@@ -425,10 +525,18 @@ export class Stack extends LitElement {
 
   // Accessibility Properties
   @property({ type: String }) role: string | null = null;
-  @property({ type: String, attribute: 'aria-label' }) ariaLabel: string | null = null;
-  @property({ type: String, attribute: 'aria-labelledby' }) ariaLabelledBy: string | null = null;
-  @property({ type: String, attribute: 'aria-describedby' }) ariaDescribedBy: string | null = null;
-  @property({ type: String, attribute: 'aria-orientation' }) ariaOrientation: string | null = null;
+  @property({ type: String, attribute: 'aria-label' }) ariaLabel:
+    | string
+    | null = null;
+  @property({ type: String, attribute: 'aria-labelledby' }) ariaLabelledBy:
+    | string
+    | null = null;
+  @property({ type: String, attribute: 'aria-describedby' }) ariaDescribedBy:
+    | string
+    | null = null;
+  @property({ type: String, attribute: 'aria-orientation' }) ariaOrientation:
+    | string
+    | null = null;
 
   // Form Properties
   @property({ type: String }) name?: string;
@@ -491,7 +599,9 @@ export class Stack extends LitElement {
     }
 
     // Set orientation based on direction
-    const orientation = this.direction.includes('row') ? 'horizontal' : 'vertical';
+    const orientation = this.direction.includes('row')
+      ? 'horizontal'
+      : 'vertical';
     this.setAttribute('aria-orientation', this.ariaOrientation || orientation);
 
     // Update ARIA labels
@@ -522,14 +632,14 @@ export class Stack extends LitElement {
 
     this.dispatchEvent(
       new CustomEvent('stack-click', {
-        detail: { 
+        detail: {
           originalEvent: event,
           direction: this.direction,
-          spacing: this.spacing 
+          spacing: this.spacing,
         },
         bubbles: true,
         composed: true,
-      })
+      }),
     );
   }
 
@@ -545,7 +655,9 @@ export class Stack extends LitElement {
     }
 
     // Allow arrow key navigation within stack
-    if (['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(event.key)) {
+    if (
+      ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(event.key)
+    ) {
       this._handleArrowNavigation(event);
     }
   }
@@ -553,7 +665,7 @@ export class Stack extends LitElement {
   private _handleArrowNavigation(event: KeyboardEvent) {
     const stackItems = this.querySelectorAll('[tabindex]');
     const currentIndex = Array.from(stackItems).findIndex(
-      item => item === document.activeElement
+      (item) => item === document.activeElement,
     );
 
     if (currentIndex === -1) return;
@@ -595,10 +707,13 @@ export class Stack extends LitElement {
 
     this.dispatchEvent(
       new CustomEvent('stack-focus', {
-        detail: { originalEvent: event, isKeyboardFocus: this._isKeyboardFocused },
+        detail: {
+          originalEvent: event,
+          isKeyboardFocus: this._isKeyboardFocused,
+        },
         bubbles: true,
         composed: true,
-      })
+      }),
     );
   }
 
@@ -610,7 +725,7 @@ export class Stack extends LitElement {
         detail: { originalEvent: event },
         bubbles: true,
         composed: true,
-      })
+      }),
     );
   }
 
@@ -624,7 +739,9 @@ export class Stack extends LitElement {
 
   private _handleFormReset() {
     this.value = undefined;
-    this.dispatchEvent(new CustomEvent('stack-reset', { bubbles: true, composed: true }));
+    this.dispatchEvent(
+      new CustomEvent('stack-reset', { bubbles: true, composed: true }),
+    );
   }
 
   // Public Methods
@@ -651,7 +768,7 @@ export class Stack extends LitElement {
       (items[index] as HTMLElement).scrollIntoView({
         behavior: 'smooth',
         block: 'nearest',
-        inline: 'nearest'
+        inline: 'nearest',
       });
     }
   }
@@ -671,7 +788,7 @@ export class Stack extends LitElement {
       interactive: this.interactive,
       disabled: this.disabled,
       elevated: this.elevated,
-      responsive: this.responsive
+      responsive: this.responsive,
     };
   }
 
@@ -681,7 +798,7 @@ export class Stack extends LitElement {
       interactive: this.interactive && !this.disabled,
       disabled: this.disabled,
       loading: this.loading,
-      'keyboard-focused': this._isKeyboardFocused
+      'keyboard-focused': this._isKeyboardFocused,
     };
 
     return html`

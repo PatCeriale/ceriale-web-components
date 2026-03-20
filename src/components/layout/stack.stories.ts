@@ -72,7 +72,7 @@ Stack adapts to different screen sizes:
       description: 'Stacking direction',
     },
     wrap: {
-      control: 'select', 
+      control: 'select',
       options: ['nowrap', 'wrap', 'wrap-reverse'],
       description: 'Flex wrap behavior',
     },
@@ -83,7 +83,14 @@ Stack adapts to different screen sizes:
     },
     justify: {
       control: 'select',
-      options: ['start', 'end', 'center', 'space-between', 'space-around', 'space-evenly'],
+      options: [
+        'start',
+        'end',
+        'center',
+        'space-between',
+        'space-around',
+        'space-evenly',
+      ],
       description: 'Justify content along the main axis',
     },
     spacing: {
@@ -106,7 +113,7 @@ Stack adapts to different screen sizes:
       description: 'Apply elevation shadow',
     },
     interactive: {
-      control: 'boolean', 
+      control: 'boolean',
       description: 'Enable interactive hover and focus states',
     },
     disabled: {
@@ -119,7 +126,7 @@ Stack adapts to different screen sizes:
     },
     responsive: {
       control: 'boolean',
-      description: 'Enable responsive behavior for mobile devices', 
+      description: 'Enable responsive behavior for mobile devices',
     },
     distribute: {
       control: 'boolean',
@@ -130,7 +137,7 @@ Stack adapts to different screen sizes:
       description: 'Make all children equal width (for row direction)',
     },
     equalHeight: {
-      control: 'boolean', 
+      control: 'boolean',
       description: 'Make all children equal height (for column direction)',
     },
     centerChildren: {
@@ -174,8 +181,14 @@ const createStackItem = (
 // Code box helper for HTML examples
 const codeBox = (title: string, code: string) => html`
   <div style="margin: 24px 0;">
-    <h4 style="margin: 0 0 8px 0; font-size: 14px; font-weight: 600; color: #1976d2;">${title}</h4>
-    <pre style="background: #f5f5f5; padding: 12px; border-radius: 8px; margin: 0; overflow-x: auto; font-size: 13px; line-height: 1.4; border: 1px solid #e0e0e0;"><code>${code}</code></pre>
+    <h4
+      style="margin: 0 0 8px 0; font-size: 14px; font-weight: 600; color: #1976d2;"
+    >
+      ${title}
+    </h4>
+    <pre
+      style="background: #f5f5f5; padding: 12px; border-radius: 8px; margin: 0; overflow-x: auto; font-size: 13px; line-height: 1.4; border: 1px solid #e0e0e0;"
+    ><code>${code}</code></pre>
   </div>
 `;
 
@@ -200,19 +213,23 @@ export const Default: Story = {
   },
   render: (args) => html`
     <div style="max-width: 1200px; padding: 24px;">
-      <h2 style="margin: 0 0 32px 0; color: #1976d2; border-bottom: 2px solid #e3f2fd; padding-bottom: 8px;">
+      <h2
+        style="margin: 0 0 32px 0; color: #1976d2; border-bottom: 2px solid #e3f2fd; padding-bottom: 8px;"
+      >
         Stack Component - Material Design 3
       </h2>
-      
+
       <!-- Interactive Controls -->
-      <section style="margin-bottom: 48px; padding: 24px; background: #f8f9fa; border-radius: 12px; border: 1px solid #e0e0e0;">
+      <section
+        style="margin-bottom: 48px; padding: 24px; background: #f8f9fa; border-radius: 12px; border: 1px solid #e0e0e0;"
+      >
         <h3 style="margin: 0 0 16px 0; color: #1976d2;">Interactive Demo</h3>
         <p style="margin: 0 0 16px 0; color: #666; line-height: 1.5;">
           Use the controls below to explore different stack configurations:
         </p>
         <mwc-stack
           direction="${args.direction}"
-          spacing="${args.spacing}" 
+          spacing="${args.spacing}"
           align="${args.align}"
           justify="${args.justify}"
           wrap="${args.wrap}"
@@ -238,47 +255,63 @@ export const Default: Story = {
 
       <!-- 1. Basic Usage -->
       <section style="margin-bottom: 48px;">
-        <h3 style="margin: 0 0 24px 0; color: #1976d2; font-size: 20px;">1. Basic Usage</h3>
-        
-        <div style="display: grid; gap: 24px; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));">
+        <h3 style="margin: 0 0 24px 0; color: #1976d2; font-size: 20px;">
+          1. Basic Usage
+        </h3>
+
+        <div
+          style="display: grid; gap: 24px; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));"
+        >
           <div>
             <h4>Column Direction (Default)</h4>
             <mwc-stack spacing="medium" style="max-width: 250px;">
-              ${createStackItem('First Item')}
-              ${createStackItem('Second Item')}
+              ${createStackItem('First Item')} ${createStackItem('Second Item')}
               ${createStackItem('Third Item')}
             </mwc-stack>
-            ${codeBox('HTML', `<mwc-stack>
+            ${codeBox(
+              'HTML',
+              `<mwc-stack>
   <div>First Item</div>
   <div>Second Item</div>
   <div>Third Item</div>
-</mwc-stack>`)}
+</mwc-stack>`,
+            )}
           </div>
 
           <div>
             <h4>Row Direction</h4>
             <mwc-stack direction="row" spacing="medium">
-              ${createStackItem('Left')}
-              ${createStackItem('Center')}
+              ${createStackItem('Left')} ${createStackItem('Center')}
               ${createStackItem('Right')}
             </mwc-stack>
-            ${codeBox('HTML', `<mwc-stack direction="row">
+            ${codeBox(
+              'HTML',
+              `<mwc-stack direction="row">
   <div>Left</div>
   <div>Center</div>
   <div>Right</div>
-</mwc-stack>`)}
+</mwc-stack>`,
+            )}
           </div>
         </div>
       </section>
 
       <!-- 2. Direction Variants -->
       <section style="margin-bottom: 48px;">
-        <h3 style="margin: 0 0 24px 0; color: #1976d2; font-size: 20px;">2. Direction Variants</h3>
-        
-        <div style="display: grid; gap: 24px; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));">
+        <h3 style="margin: 0 0 24px 0; color: #1976d2; font-size: 20px;">
+          2. Direction Variants
+        </h3>
+
+        <div
+          style="display: grid; gap: 24px; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));"
+        >
           <div>
             <h4>Column</h4>
-            <mwc-stack direction="column" spacing="small" style="max-width: 200px;">
+            <mwc-stack
+              direction="column"
+              spacing="small"
+              style="max-width: 200px;"
+            >
               ${createStackItem('First', '#e3f2fd')}
               ${createStackItem('Second', '#e8f5e8')}
               ${createStackItem('Third', '#fff3e0')}
@@ -296,7 +329,11 @@ export const Default: Story = {
 
           <div>
             <h4>Column Reverse</h4>
-            <mwc-stack direction="column-reverse" spacing="small" style="max-width: 200px;">
+            <mwc-stack
+              direction="column-reverse"
+              spacing="small"
+              style="max-width: 200px;"
+            >
               ${createStackItem('First (last)', '#e3f2fd')}
               ${createStackItem('Second', '#e8f5e8')}
               ${createStackItem('Third (first)', '#fff3e0')}
@@ -316,15 +353,18 @@ export const Default: Story = {
 
       <!-- 3. Spacing Options -->
       <section style="margin-bottom: 48px;">
-        <h3 style="margin: 0 0 24px 0; color: #1976d2; font-size: 20px;">3. Spacing Options</h3>
-        
+        <h3 style="margin: 0 0 24px 0; color: #1976d2; font-size: 20px;">
+          3. Spacing Options
+        </h3>
+
         <div style="display: grid; gap: 24px;">
-          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
+          <div
+            style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;"
+          >
             <div>
               <h4>None (0px)</h4>
               <mwc-stack spacing="none" style="max-width: 150px;">
-                ${createStackItem('A')}
-                ${createStackItem('B')}
+                ${createStackItem('A')} ${createStackItem('B')}
                 ${createStackItem('C')}
               </mwc-stack>
             </div>
@@ -332,8 +372,7 @@ export const Default: Story = {
             <div>
               <h4>XS (4px)</h4>
               <mwc-stack spacing="xs" style="max-width: 150px;">
-                ${createStackItem('A')}
-                ${createStackItem('B')}
+                ${createStackItem('A')} ${createStackItem('B')}
                 ${createStackItem('C')}
               </mwc-stack>
             </div>
@@ -341,8 +380,7 @@ export const Default: Story = {
             <div>
               <h4>Small (8px)</h4>
               <mwc-stack spacing="small" style="max-width: 150px;">
-                ${createStackItem('A')}
-                ${createStackItem('B')}
+                ${createStackItem('A')} ${createStackItem('B')}
                 ${createStackItem('C')}
               </mwc-stack>
             </div>
@@ -350,8 +388,7 @@ export const Default: Story = {
             <div>
               <h4>Medium (16px)</h4>
               <mwc-stack spacing="medium" style="max-width: 150px;">
-                ${createStackItem('A')}
-                ${createStackItem('B')}
+                ${createStackItem('A')} ${createStackItem('B')}
                 ${createStackItem('C')}
               </mwc-stack>
             </div>
@@ -359,8 +396,7 @@ export const Default: Story = {
             <div>
               <h4>Large (24px)</h4>
               <mwc-stack spacing="large" style="max-width: 150px;">
-                ${createStackItem('A')}
-                ${createStackItem('B')}
+                ${createStackItem('A')} ${createStackItem('B')}
                 ${createStackItem('C')}
               </mwc-stack>
             </div>
@@ -368,8 +404,7 @@ export const Default: Story = {
             <div>
               <h4>XL (32px)</h4>
               <mwc-stack spacing="xl" style="max-width: 150px;">
-                ${createStackItem('A')}
-                ${createStackItem('B')}
+                ${createStackItem('A')} ${createStackItem('B')}
                 ${createStackItem('C')}
               </mwc-stack>
             </div>
@@ -379,8 +414,10 @@ export const Default: Story = {
 
       <!-- 4. Alignment & Justification -->
       <section style="margin-bottom: 48px;">
-        <h3 style="margin: 0 0 24px 0; color: #1976d2; font-size: 20px;">4. Alignment & Justification</h3>
-        
+        <h3 style="margin: 0 0 24px 0; color: #1976d2; font-size: 20px;">
+          4. Alignment & Justification
+        </h3>
+
         <div style="display: grid; gap: 24px;">
           <div>
             <h4>Center Alignment</h4>
@@ -391,7 +428,9 @@ export const Default: Story = {
               style="min-height: 100px; border: 1px dashed #e0e0e0; padding: 16px;"
             >
               ${createStackItem('Short')}
-              <div style="padding: 32px; background: #f8bbd9; color: #880e4f; border-radius: 8px; text-align: center;">
+              <div
+                style="padding: 32px; background: #f8bbd9; color: #880e4f; border-radius: 8px; text-align: center;"
+              >
                 Tall Content
               </div>
               ${createStackItem('Short')}
@@ -406,8 +445,7 @@ export const Default: Story = {
               spacing="none"
               style="border: 1px dashed #e0e0e0; padding: 16px;"
             >
-              ${createStackItem('Left')}
-              ${createStackItem('Center')}
+              ${createStackItem('Left')} ${createStackItem('Center')}
               ${createStackItem('Right')}
             </mwc-stack>
           </div>
@@ -420,8 +458,7 @@ export const Default: Story = {
               spacing="medium"
               style="border: 1px dashed #e0e0e0; padding: 16px;"
             >
-              ${createStackItem('Centered 1')}
-              ${createStackItem('Centered 2')}
+              ${createStackItem('Centered 1')} ${createStackItem('Centered 2')}
             </mwc-stack>
           </div>
         </div>
@@ -429,12 +466,20 @@ export const Default: Story = {
 
       <!-- 5. Color Variants & Elevation -->
       <section style="margin-bottom: 48px;">
-        <h3 style="margin: 0 0 24px 0; color: #1976d2; font-size: 20px;">5. Color Variants & Elevation</h3>
-        
-        <div style="display: grid; gap: 20px; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
+        <h3 style="margin: 0 0 24px 0; color: #1976d2; font-size: 20px;">
+          5. Color Variants & Elevation
+        </h3>
+
+        <div
+          style="display: grid; gap: 20px; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));"
+        >
           <div>
             <h4>Primary</h4>
-            <mwc-stack variant="primary" spacing="small" style="padding: 16px; border-radius: 8px; min-width: 180px;">
+            <mwc-stack
+              variant="primary"
+              spacing="small"
+              style="padding: 16px; border-radius: 8px; min-width: 180px;"
+            >
               ${createStackItem('Primary Item', '#ffffff', '#1976d2')}
               ${createStackItem('Primary Item', '#ffffff', '#1976d2')}
             </mwc-stack>
@@ -442,7 +487,11 @@ export const Default: Story = {
 
           <div>
             <h4>Secondary</h4>
-            <mwc-stack variant="secondary" spacing="small" style="padding: 16px; border-radius: 8px; min-width: 180px;">
+            <mwc-stack
+              variant="secondary"
+              spacing="small"
+              style="padding: 16px; border-radius: 8px; min-width: 180px;"
+            >
               ${createStackItem('Secondary Item', '#ffffff', '#c2185b')}
               ${createStackItem('Secondary Item', '#ffffff', '#c2185b')}
             </mwc-stack>
@@ -450,7 +499,11 @@ export const Default: Story = {
 
           <div>
             <h4>Success</h4>
-            <mwc-stack variant="success" spacing="small" style="padding: 16px; border-radius: 8px; min-width: 180px;">
+            <mwc-stack
+              variant="success"
+              spacing="small"
+              style="padding: 16px; border-radius: 8px; min-width: 180px;"
+            >
               ${createStackItem('Success Item', '#ffffff', '#388e3c')}
               ${createStackItem('Success Item', '#ffffff', '#388e3c')}
             </mwc-stack>
@@ -458,7 +511,11 @@ export const Default: Story = {
 
           <div>
             <h4>Elevated</h4>
-            <mwc-stack elevated spacing="medium" style="padding: 24px; border-radius: 12px; min-width: 180px;">
+            <mwc-stack
+              elevated
+              spacing="medium"
+              style="padding: 24px; border-radius: 12px; min-width: 180px;"
+            >
               ${createStackItem('Elevated Item')}
               ${createStackItem('Elevated Item')}
             </mwc-stack>
@@ -468,28 +525,42 @@ export const Default: Story = {
 
       <!-- 6. Interactive States -->
       <section style="margin-bottom: 48px;">
-        <h3 style="margin: 0 0 24px 0; color: #1976d2; font-size: 20px;">6. Interactive States</h3>
-        
-        <div style="display: grid; gap: 24px; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));">
+        <h3 style="margin: 0 0 24px 0; color: #1976d2; font-size: 20px;">
+          6. Interactive States
+        </h3>
+
+        <div
+          style="display: grid; gap: 24px; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));"
+        >
           <div>
             <h4>Interactive (Hover/Click)</h4>
-            <mwc-stack interactive spacing="medium" style="padding: 16px; border-radius: 8px; max-width: 200px;">
-              ${createStackItem('Hover me!')}
-              ${createStackItem('Click me!')}
+            <mwc-stack
+              interactive
+              spacing="medium"
+              style="padding: 16px; border-radius: 8px; max-width: 200px;"
+            >
+              ${createStackItem('Hover me!')} ${createStackItem('Click me!')}
             </mwc-stack>
           </div>
 
           <div>
             <h4>Loading State</h4>
-            <mwc-stack loading spacing="medium" style="padding: 16px; border-radius: 8px; max-width: 200px;">
-              ${createStackItem('Loading...')}
-              ${createStackItem('Please wait')}
+            <mwc-stack
+              loading
+              spacing="medium"
+              style="padding: 16px; border-radius: 8px; max-width: 200px;"
+            >
+              ${createStackItem('Loading...')} ${createStackItem('Please wait')}
             </mwc-stack>
           </div>
 
           <div>
             <h4>Disabled State</h4>
-            <mwc-stack disabled spacing="medium" style="padding: 16px; border-radius: 8px; max-width: 200px;">
+            <mwc-stack
+              disabled
+              spacing="medium"
+              style="padding: 16px; border-radius: 8px; max-width: 200px;"
+            >
               ${createStackItem('Disabled')}
               ${createStackItem('Cannot interact')}
             </mwc-stack>
@@ -499,8 +570,10 @@ export const Default: Story = {
 
       <!-- 7. Advanced Features -->
       <section style="margin-bottom: 48px;">
-        <h3 style="margin: 0 0 24px 0; color: #1976d2; font-size: 20px;">7. Advanced Features</h3>
-        
+        <h3 style="margin: 0 0 24px 0; color: #1976d2; font-size: 20px;">
+          7. Advanced Features
+        </h3>
+
         <div style="display: grid; gap: 24px;">
           <div>
             <h4>Equal Width Items (Row)</h4>
@@ -509,18 +582,27 @@ export const Default: Story = {
               ${createStackItem('Much longer content here')}
               ${createStackItem('Medium')}
             </mwc-stack>
-            ${codeBox('HTML', `<mwc-stack direction="row" equal-width>
+            ${codeBox(
+              'HTML',
+              `<mwc-stack direction="row" equal-width>
   <div>Short</div>
   <div>Much longer content here</div>
   <div>Medium</div>
-</mwc-stack>`)}
+</mwc-stack>`,
+            )}
           </div>
 
           <div>
             <h4>Equal Height Items (Column)</h4>
-            <mwc-stack equal-height spacing="medium" style="max-width: 300px; min-height: 200px;">
+            <mwc-stack
+              equal-height
+              spacing="medium"
+              style="max-width: 300px; min-height: 200px;"
+            >
               ${createStackItem('Normal')}
-              <div style="padding: 24px; background: #f8bbd9; color: #880e4f; border-radius: 8px; text-align: center; display: flex; align-items: center; justify-content: center;">
+              <div
+                style="padding: 24px; background: #f8bbd9; color: #880e4f; border-radius: 8px; text-align: center; display: flex; align-items: center; justify-content: center;"
+              >
                 Taller content with more text that spans multiple lines
               </div>
               ${createStackItem('Normal')}
@@ -554,13 +636,16 @@ export const Default: Story = {
 
       <!-- 8. Responsive Design -->
       <section style="margin-bottom: 48px;">
-        <h3 style="margin: 0 0 24px 0; color: #1976d2; font-size: 20px;">8. Responsive Design</h3>
-        
+        <h3 style="margin: 0 0 24px 0; color: #1976d2; font-size: 20px;">
+          8. Responsive Design
+        </h3>
+
         <div style="display: grid; gap: 24px;">
           <div>
             <h4>Responsive Stack (Resize window to see effect)</h4>
             <p style="color: #666; margin: 0 0 16px 0; font-size: 14px;">
-              This stack changes from row (desktop) to column (mobile) automatically.
+              This stack changes from row (desktop) to column (mobile)
+              automatically.
             </p>
             <mwc-stack
               responsive
@@ -573,27 +658,40 @@ export const Default: Story = {
               ${createStackItem('Responsive 3')}
               ${createStackItem('Responsive 4')}
             </mwc-stack>
-            ${codeBox('HTML', `<mwc-stack responsive direction="row">
+            ${codeBox(
+              'HTML',
+              `<mwc-stack responsive direction="row">
   <div>Responsive 1</div>
   <div>Responsive 2</div>
   <div>Responsive 3</div>
   <div>Responsive 4</div>
-</mwc-stack>`)}
+</mwc-stack>`,
+            )}
           </div>
 
           <div>
             <h4>Mobile-First Design Example</h4>
             <p style="color: #666; margin: 0 0 16px 0; font-size: 14px;">
-              Best practices: Design for mobile first, then enhance for larger screens.
+              Best practices: Design for mobile first, then enhance for larger
+              screens.
             </p>
-            <mwc-stack spacing="medium" style="border: 1px solid #e0e0e0; padding: 16px; border-radius: 8px; max-width: 400px;">
-              <div style="padding: 12px; background: #e3f2fd; border-radius: 6px; text-align: center;">
+            <mwc-stack
+              spacing="medium"
+              style="border: 1px solid #e0e0e0; padding: 16px; border-radius: 8px; max-width: 400px;"
+            >
+              <div
+                style="padding: 12px; background: #e3f2fd; border-radius: 6px; text-align: center;"
+              >
                 📱 Mobile: Column layout
               </div>
-              <div style="padding: 12px; background: #e8f5e8; border-radius: 6px; text-align: center;">
+              <div
+                style="padding: 12px; background: #e8f5e8; border-radius: 6px; text-align: center;"
+              >
                 💻 Desktop: Row layout (with responsive prop)
               </div>
-              <div style="padding: 12px; background: #fff3e0; border-radius: 6px; text-align: center;">
+              <div
+                style="padding: 12px; background: #fff3e0; border-radius: 6px; text-align: center;"
+              >
                 🎯 44px min touch targets on mobile
               </div>
             </mwc-stack>
@@ -603,13 +701,16 @@ export const Default: Story = {
 
       <!-- 9. Accessibility Features -->
       <section style="margin-bottom: 48px;">
-        <h3 style="margin: 0 0 24px 0; color: #1976d2; font-size: 20px;">9. Accessibility Features</h3>
-        
+        <h3 style="margin: 0 0 24px 0; color: #1976d2; font-size: 20px;">
+          9. Accessibility Features
+        </h3>
+
         <div style="display: grid; gap: 24px;">
           <div>
             <h4>Keyboard Navigation (Interactive Stack)</h4>
             <p style="color: #666; margin: 0 0 16px 0; font-size: 14px;">
-              Tab to focus, Enter/Space to activate, Arrow keys to navigate children.
+              Tab to focus, Enter/Space to activate, Arrow keys to navigate
+              children.
             </p>
             <mwc-stack
               interactive
@@ -617,13 +718,19 @@ export const Default: Story = {
               aria-label="Navigation menu"
               style="max-width: 300px; border: 2px solid #1976d2; border-radius: 8px; padding: 16px;"
             >
-              <button style="padding: 12px; border: 1px solid #1976d2; background: #e3f2fd; border-radius: 6px; cursor: pointer;">
+              <button
+                style="padding: 12px; border: 1px solid #1976d2; background: #e3f2fd; border-radius: 6px; cursor: pointer;"
+              >
                 Home
               </button>
-              <button style="padding: 12px; border: 1px solid #1976d2; background: #e3f2fd; border-radius: 6px; cursor: pointer;">
+              <button
+                style="padding: 12px; border: 1px solid #1976d2; background: #e3f2fd; border-radius: 6px; cursor: pointer;"
+              >
                 About
               </button>
-              <button style="padding: 12px; border: 1px solid #1976d2; background: #e3f2fd; border-radius: 6px; cursor: pointer;">
+              <button
+                style="padding: 12px; border: 1px solid #1976d2; background: #e3f2fd; border-radius: 6px; cursor: pointer;"
+              >
                 Contact
               </button>
             </mwc-stack>
@@ -637,62 +744,87 @@ export const Default: Story = {
               spacing="medium"
               style="max-width: 400px; border: 1px solid #e0e0e0; padding: 16px; border-radius: 8px;"
             >
-              <div style="padding: 12px; background: #f5f5f5; border-radius: 6px;">
+              <div
+                style="padding: 12px; background: #f5f5f5; border-radius: 6px;"
+              >
                 <strong>Semantic HTML:</strong> Proper ARIA roles and labels
               </div>
-              <div style="padding: 12px; background: #f5f5f5; border-radius: 6px;">
+              <div
+                style="padding: 12px; background: #f5f5f5; border-radius: 6px;"
+              >
                 <strong>Focus Management:</strong> Logical tab order
               </div>
-              <div style="padding: 12px; background: #f5f5f5; border-radius: 6px;">
+              <div
+                style="padding: 12px; background: #f5f5f5; border-radius: 6px;"
+              >
                 <strong>Screen Readers:</strong> Meaningful announcements
               </div>
             </mwc-stack>
-            ${codeBox('HTML', `<mwc-stack role="region" aria-label="Product features">
+            ${codeBox(
+              'HTML',
+              `<mwc-stack role="region" aria-label="Product features">
   <div>Feature 1</div>
   <div>Feature 2</div>
   <div>Feature 3</div>
-</mwc-stack>`)}
+</mwc-stack>`,
+            )}
           </div>
         </div>
       </section>
 
       <!-- 10. Form Integration -->
       <section style="margin-bottom: 48px;">
-        <h3 style="margin: 0 0 24px 0; color: #1976d2; font-size: 20px;">10. Form Integration</h3>
-        
+        <h3 style="margin: 0 0 24px 0; color: #1976d2; font-size: 20px;">
+          10. Form Integration
+        </h3>
+
         <div style="display: grid; gap: 24px;">
           <div>
             <h4>Form Layout with Stack</h4>
-            <form style="max-width: 400px; border: 1px solid #e0e0e0; padding: 24px; border-radius: 12px;">
+            <form
+              style="max-width: 400px; border: 1px solid #e0e0e0; padding: 24px; border-radius: 12px;"
+            >
               <mwc-stack spacing="large">
                 <div>
-                  <label for="name" style="display: block; margin-bottom: 4px; font-weight: 500;">Name</label>
-                  <input 
+                  <label
+                    for="name"
+                    style="display: block; margin-bottom: 4px; font-weight: 500;"
+                    >Name</label
+                  >
+                  <input
                     id="name"
-                    type="text" 
+                    type="text"
                     style="width: 100%; padding: 12px; border: 1px solid #e0e0e0; border-radius: 6px; box-sizing: border-box;"
                     placeholder="Enter your name"
                   />
                 </div>
-                
+
                 <div>
-                  <label for="email" style="display: block; margin-bottom: 4px; font-weight: 500;">Email</label>
-                  <input 
+                  <label
+                    for="email"
+                    style="display: block; margin-bottom: 4px; font-weight: 500;"
+                    >Email</label
+                  >
+                  <input
                     id="email"
-                    type="email" 
+                    type="email"
                     style="width: 100%; padding: 12px; border: 1px solid #e0e0e0; border-radius: 6px; box-sizing: border-box;"
                     placeholder="Enter your email"
                   />
                 </div>
 
-                <mwc-stack direction="row" spacing="medium" justify="space-between">
-                  <button 
+                <mwc-stack
+                  direction="row"
+                  spacing="medium"
+                  justify="space-between"
+                >
+                  <button
                     type="submit"
                     style="flex: 1; padding: 12px 24px; background: #1976d2; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 500;"
                   >
                     Submit
                   </button>
-                  <button 
+                  <button
                     type="button"
                     style="flex: 1; padding: 12px 24px; background: transparent; color: #1976d2; border: 1px solid #1976d2; border-radius: 6px; cursor: pointer; font-weight: 500;"
                   >
@@ -701,7 +833,9 @@ export const Default: Story = {
                 </mwc-stack>
               </mwc-stack>
             </form>
-            ${codeBox('HTML', `<form>
+            ${codeBox(
+              'HTML',
+              `<form>
   <mwc-stack spacing="large">
     <input type="text" placeholder="Name" />
     <input type="email" placeholder="Email" />
@@ -710,21 +844,25 @@ export const Default: Story = {
       <button type="button">Cancel</button>
     </mwc-stack>
   </mwc-stack>
-</form>`)}
+</form>`,
+            )}
           </div>
 
           <div>
             <h4>FormData Integration</h4>
             <p style="color: #666; margin: 0 0 16px 0; font-size: 14px;">
-              Stack components can participate in form submissions with name/value attributes.
+              Stack components can participate in form submissions with
+              name/value attributes.
             </p>
-            <mwc-stack 
+            <mwc-stack
               name="preferences"
               value="notifications-enabled"
               spacing="small"
               style="max-width: 300px; border: 1px dashed #e0e0e0; padding: 16px; border-radius: 8px;"
             >
-              <div style="padding: 8px; background: #f5f5f5; border-radius: 4px; font-size: 14px;">
+              <div
+                style="padding: 8px; background: #f5f5f5; border-radius: 4px; font-size: 14px;"
+              >
                 Form field: preferences = "notifications-enabled"
               </div>
             </mwc-stack>
@@ -733,17 +871,45 @@ export const Default: Story = {
       </section>
 
       <!-- Best Practices Summary -->
-      <section style="margin-bottom: 48px; padding: 24px; background: #f8f9fa; border-radius: 12px; border-left: 4px solid #1976d2;">
-        <h3 style="margin: 0 0 16px 0; color: #1976d2; font-size: 20px;">💡 Best Practices</h3>
-        <ul style="margin: 0; padding-left: 20px; line-height: 1.6; color: #333;">
-          <li><strong>Mobile First:</strong> Design for mobile, then enhance for desktop</li>
-          <li><strong>Consistent Spacing:</strong> Use the built-in spacing scale for consistency</li>
-          <li><strong>Semantic Structure:</strong> Include proper ARIA labels for accessibility</li>
-          <li><strong>Touch Targets:</strong> Ensure 44px minimum for interactive elements</li>
-          <li><strong>Performance:</strong> Use CSS gap when available for better performance</li>
-          <li><strong>Responsive Design:</strong> Test on multiple screen sizes</li>
-          <li><strong>Color Contrast:</strong> Maintain 4.5:1 contrast ratio for text</li>
-          <li><strong>Focus Management:</strong> Provide clear focus indicators</li>
+      <section
+        style="margin-bottom: 48px; padding: 24px; background: #f8f9fa; border-radius: 12px; border-left: 4px solid #1976d2;"
+      >
+        <h3 style="margin: 0 0 16px 0; color: #1976d2; font-size: 20px;">
+          💡 Best Practices
+        </h3>
+        <ul
+          style="margin: 0; padding-left: 20px; line-height: 1.6; color: #333;"
+        >
+          <li>
+            <strong>Mobile First:</strong> Design for mobile, then enhance for
+            desktop
+          </li>
+          <li>
+            <strong>Consistent Spacing:</strong> Use the built-in spacing scale
+            for consistency
+          </li>
+          <li>
+            <strong>Semantic Structure:</strong> Include proper ARIA labels for
+            accessibility
+          </li>
+          <li>
+            <strong>Touch Targets:</strong> Ensure 44px minimum for interactive
+            elements
+          </li>
+          <li>
+            <strong>Performance:</strong> Use CSS gap when available for better
+            performance
+          </li>
+          <li>
+            <strong>Responsive Design:</strong> Test on multiple screen sizes
+          </li>
+          <li>
+            <strong>Color Contrast:</strong> Maintain 4.5:1 contrast ratio for
+            text
+          </li>
+          <li>
+            <strong>Focus Management:</strong> Provide clear focus indicators
+          </li>
         </ul>
       </section>
     </div>
