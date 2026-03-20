@@ -63,7 +63,7 @@ npm install ceriale-web-components
 ### ES Modules
 
 ```javascript
-import { Button, Card, Input } from 'ceriale-web-components';
+import { Button, Card, TextInput } from 'ceriale-web-components';
 import { applyTheme, darkTheme } from 'ceriale-web-components';
 
 // Apply dark theme
@@ -117,7 +117,7 @@ Flexible container for displaying related content.
 
 - `mwc-card-click` - Fired when clickable card is clicked
 
-### Input (`mwc-input`)
+### TextInput (`mwc-textinput`)
 
 Text input field with styling.
 
@@ -144,10 +144,10 @@ Text input field with styling.
 
 **Events:**
 
-- `mwc-input` - Fired when input value changes
-- `mwc-focus` - Fired when input receives focus
-- `mwc-blur` - Fired when input loses focus
-- `mwc-enter` - Fired when Enter key is pressed
+- `mwc-textinput-input` - Fired when input value changes
+- `mwc-textinput-focus` - Fired when input receives focus
+- `mwc-textinput-blur` - Fired when input loses focus
+- `mwc-textinput-enter` - Fired when Enter key is pressed
 
 ## Theming
 

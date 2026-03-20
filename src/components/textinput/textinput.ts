@@ -6,9 +6,9 @@ import { live } from 'lit/directives/live.js';
 import { baseStyles } from '../../styles/base.js';
 import { generateId } from '../../utils/index.js';
 
-export type InputVariant = 'outlined' | 'filled' | 'standard';
-export type InputSize = 'small' | 'medium' | 'large';
-export type InputType =
+export type TextInputVariant = 'outlined' | 'filled' | 'standard';
+export type TextInputSize = 'small' | 'medium' | 'large';
+export type TextInputType =
   | 'text'
   | 'email'
   | 'password'
@@ -31,8 +31,8 @@ export type InputType =
  * @csspart start-adornment - The start adornment container
  * @csspart end-adornment - The end adornment container
  */
-@customElement('mwc-input')
-export class Input extends LitElement {
+@customElement('mwc-textinput')
+export class TextInput extends LitElement {
   static styles = [
     baseStyles,
     css`
@@ -238,9 +238,9 @@ export class Input extends LitElement {
     `,
   ];
 
-  @property({ reflect: true }) variant: InputVariant = 'outlined';
-  @property({ reflect: true }) size: InputSize = 'medium';
-  @property() type: InputType = 'text';
+  @property({ reflect: true }) variant: TextInputVariant = 'outlined';
+  @property({ reflect: true }) size: TextInputSize = 'medium';
+  @property() type: TextInputType = 'text';
   @property() value = '';
   @property() placeholder = '';
   @property() label = '';
@@ -252,7 +252,6 @@ export class Input extends LitElement {
   @property({ type: Boolean, reflect: true }) error = false;
   @property() autocomplete?: string;
   @property() name?: string;
-  @property() declare id: string;
   @property({ type: Number }) minlength?: number;
   @property({ type: Number }) maxlength?: number;
   @property() pattern?: string;
@@ -263,7 +262,7 @@ export class Input extends LitElement {
   @query('.input') private inputElement!: HTMLInputElement | null;
   @state() private focused = false;
   @state() private hasValue = false;
-  @state() private inputId = generateId('input');
+  @state() private inputId = generateId('textinput');
 
   connectedCallback() {
     super.connectedCallback();
@@ -290,7 +289,7 @@ export class Input extends LitElement {
     this.updateHasValue();
 
     this.dispatchEvent(
-      new CustomEvent('mwc-input', {
+      new CustomEvent('mwc-textinput-input', {
         detail: { value: this.value, originalEvent: event },
         bubbles: true,
         composed: true,
@@ -301,7 +300,7 @@ export class Input extends LitElement {
   private handleFocus = (event: FocusEvent) => {
     this.focused = true;
     this.dispatchEvent(
-      new CustomEvent('mwc-focus', {
+      new CustomEvent('mwc-textinput-focus', {
         detail: { originalEvent: event },
         bubbles: true,
         composed: true,
@@ -312,7 +311,7 @@ export class Input extends LitElement {
   private handleBlur = (event: FocusEvent) => {
     this.focused = false;
     this.dispatchEvent(
-      new CustomEvent('mwc-blur', {
+      new CustomEvent('mwc-textinput-blur', {
         detail: { originalEvent: event },
         bubbles: true,
         composed: true,
@@ -323,7 +322,7 @@ export class Input extends LitElement {
   private handleKeyDown = (event: KeyboardEvent) => {
     if (event.key === 'Enter') {
       this.dispatchEvent(
-        new CustomEvent('mwc-enter', {
+        new CustomEvent('mwc-textinput-enter', {
           detail: { value: this.value, originalEvent: event },
           bubbles: true,
           composed: true,
@@ -332,7 +331,7 @@ export class Input extends LitElement {
     }
 
     this.dispatchEvent(
-      new CustomEvent('mwc-keydown', {
+      new CustomEvent('mwc-textinput-keydown', {
         detail: { key: event.key, originalEvent: event },
         bubbles: true,
         composed: true,

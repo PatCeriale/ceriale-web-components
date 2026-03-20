@@ -1,6 +1,7 @@
 import type { Preview } from '@storybook/web-components';
 import { setCustomElementsManifest } from '@storybook/web-components';
 import { applyTheme, lightTheme, darkTheme } from '../src/index.js';
+// @ts-ignore: CSS side-effect import for Storybook styling
 import './global.css';
 
 // Apply default theme
@@ -26,6 +27,13 @@ const preview: Preview = {
             : notes.markdown || notes.text;
         }
         return null;
+      },
+    },
+    options: {
+      storySort: {
+        // method: 'alphabetical',
+        order: ['Application', '*', 'Components', 'Layout'],
+        locales: '',
       },
     },
     backgrounds: {

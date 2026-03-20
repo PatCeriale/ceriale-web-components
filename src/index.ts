@@ -5,7 +5,7 @@ export * from './tokens/index.js';
 export { Button } from './components/button/button.js';
 export { Card } from './components/card/card.js';
 export { CodeBox } from './components/code-box/code-box.js';
-export { Input } from './components/input/input.js';
+export { TextInput } from './components/textinput/textinput.js';
 export { Toggle } from './components/toggle/toggle.js';
 
 // Icons
