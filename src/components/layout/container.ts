@@ -19,7 +19,7 @@ export type ContainerSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'xxl' | 'fluid';
 export type ContainerAlign = 'left' | 'center' | 'right';
 
 /**
- * Material Design 3 Container Component
+ *  Container Component
  *
  * A responsive container that centers content and applies consistent max-widths
  * based on breakpoints. Perfect for page layouts and content sections.

@@ -1,8 +1,8 @@
 /**
- * Material Design 3 Layout Component Library
+ *  Layout Component Library
  *
  * This module exports a comprehensive set of layout components for building
- * responsive, accessible, and themeable user interfaces with Material Design 3.
+ * responsive, accessible, and themeable user interfaces with .
  *
  * Components:
  * - Box: Flexible container with spacing, positioning, and flexbox utilities
@@ -12,7 +12,7 @@
  * - Stack: Vertical/horizontal stacking container with consistent spacing
  *
  * Features:
- * - Material Design 3 compliant
+ * -  compliant
  * - Fully responsive with mobile-first breakpoint system
  * - Accessible (WCAG 2.1 AA compliant)
  * - Themeable with CSS custom properties

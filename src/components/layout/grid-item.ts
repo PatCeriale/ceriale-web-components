@@ -21,7 +21,7 @@ export type GridItemAlign = 'auto' | 'start' | 'end' | 'center' | 'stretch';
 export type GridItemJustify = 'auto' | 'start' | 'end' | 'center' | 'stretch';
 
 /**
- * Material Design 3 Grid Item Component
+ *  Grid Item Component
  *
  * A flexible grid item that works within mwc-grid containers.
  * Supports column/row spanning, positioning, and responsive sizing.

@@ -2,25 +2,20 @@ import { LitElement, html, css, CSSResultGroup } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
 import { styleMap } from 'lit/directives/style-map.js';
+import { ifDefined } from 'lit/directives/if-defined.js';
 import {
   LayoutSize,
   LayoutColor,
   SpacingValue,
   ResponsiveValue,
-  AlignItems,
-  JustifyContent,
-  GridTemplateColumns,
-  GridTemplateRows,
-  GridAutoFlow,
   getSpacingValue,
-  breakpoints,
 } from './types.js';
 
-// Grid system variants
+// Grid system variants following Material Design 3
 export type GridSystem = 'css-grid' | 'flexbox';
 
-// Grid direction for flexbox-based grids
-export type GridDirection = 'row' | 'row-reverse' | 'column' | 'column-reverse';
+// Grid layout density variants
+export type GridDensity = 'compact' | 'comfortable' | 'spacious';
 
 // Grid responsive column counts (12-column system + auto)
 export type GridColumns =
@@ -36,432 +31,581 @@ export type GridColumns =
   | 10
   | 11
   | 12
-  | 'auto'
-  | 'none';
+  | 'auto';
 
-// Grid item responsive sizing
-export type GridItemSize = ResponsiveValue<GridColumns>;
+// Alignment options
+export type AlignItems = 'start' | 'end' | 'center' | 'stretch' | 'baseline';
+export type JustifyContent =
+  | 'start'
+  | 'end'
+  | 'center'
+  | 'space-between'
+  | 'space-around'
+  | 'space-evenly';
+
+// Grid auto-flow directions
+export type GridAutoFlow = 'row' | 'column' | 'row-dense' | 'column-dense';
 
 /**
  * Material Design 3 Grid Component
  *
- * A flexible grid system supporting both CSS Grid and Flexbox layouts.
- * Provides responsive column systems, spacing control, and alignment options.
+ * A comprehensive responsive grid system that supports both CSS Grid and Flexbox layouts.
+ * Built with Material Design 3 principles, full accessibility support, and seamless theme integration.
  *
  * @element mwc-grid
- * @slot - Default slot for grid items
+ * @slot - Default slot for grid items (mwc-grid-item components)
  *
+ * @fires grid-change - Fired when grid configuration changes
+ * @fires grid-click - Fired when interactive grid is clicked
+ * @fires grid-focus - Fired when grid receives focus
+ * @fires grid-blur - Fired when grid loses focus
+ *
+ * @cssprop --grid-background-color - Custom background color
+ * @cssprop --grid-border-color - Custom border color
+ * @cssprop --grid-border-radius - Custom border radius
  * @cssprop --grid-gap - Custom gap between grid items
- * @cssprop --grid-columns - Custom column template
- * @cssprop --grid-rows - Custom row template
- * @cssprop --grid-background - Custom background color
+ * @cssprop --grid-padding - Custom internal padding
+ * @cssprop --grid-transition-duration - Custom transition duration
+ * @cssprop --grid-hover-transform - Custom hover transform
+ * @cssprop --grid-focus-outline - Custom focus outline
+ *
+ * @csspart container - The main grid container
+ * @csspart item - Individual grid item wrapper
  */
 @customElement('mwc-grid')
 export class Grid extends LitElement {
   static styles: CSSResultGroup = css`
     :host {
-      --_grid-transition: all 250ms cubic-bezier(0.2, 0, 0, 1);
+      /* Material Design 3 Design Tokens */
+      --_grid-transition-duration: var(--grid-transition-duration, 250ms);
+      --_grid-transition-easing: cubic-bezier(0.4, 0, 0.2, 1);
+      --_grid-border-radius: var(
+        --grid-border-radius,
+        var(--border-radius-medium, 12px)
+      );
+      --_grid-background-color: var(--grid-background-color, transparent);
+      --_grid-border-color: var(--grid-border-color, transparent);
+      --_grid-gap: var(--grid-gap, var(--spacing-3, 16px));
+      --_grid-padding: var(--grid-padding, 0);
+      --_grid-focus-outline: var(
+        --grid-focus-outline,
+        2px solid var(--color-primary-600, #1976d2)
+      );
+      --_grid-hover-transform: var(--grid-hover-transform, translateY(-2px));
 
       display: block;
       width: 100%;
-      background: var(--grid-background, transparent);
-      transition: var(--_grid-transition);
+      height: 100%;
       box-sizing: border-box;
 
-      /* Respect reduced motion */
-      @media (prefers-reduced-motion: reduce) {
-        --_grid-transition: none;
-      }
+      background-color: var(--_grid-background-color);
+      border: 1px solid var(--_grid-border-color);
+      border-radius: var(--_grid-border-radius);
+      padding: var(--_grid-padding);
 
-      /* RTL support */
-      direction: var(--text-direction, ltr);
+      transition: transform var(--_grid-transition-duration)
+          var(--_grid-transition-easing),
+        box-shadow var(--_grid-transition-duration)
+          var(--_grid-transition-easing),
+        background-color var(--_grid-transition-duration)
+          var(--_grid-transition-easing);
+
+      /* Accessibility */
+      outline: none;
+
+      /* RTL Support */
+      direction: inherit;
+
+      /* Reduced Motion Support */
+      @media (prefers-reduced-motion: reduce) {
+        --_grid-transition-duration: 0ms;
+        --_grid-hover-transform: none;
+      }
     }
 
+    /* Container Styles */
     .grid-container {
-      display: var(--_display, grid);
       width: 100%;
       height: 100%;
+      box-sizing: border-box;
+      display: var(--_display, grid);
     }
 
-    /* CSS Grid system */
+    /* CSS Grid System */
     :host([system='css-grid']) .grid-container {
       display: grid;
-      grid-template-columns: var(--grid-columns, repeat(12, 1fr));
-      grid-template-rows: var(--grid-rows, auto);
+      grid-template-columns: var(--_grid-columns, repeat(12, 1fr));
+      grid-auto-rows: var(--_grid-rows, auto);
       grid-auto-flow: var(--_grid-auto-flow, row);
-      gap: var(--grid-gap, var(--spacing-3, 16px));
+      gap: var(--_grid-gap);
+      align-items: var(--_align-items, stretch);
+      justify-content: var(--_justify-content, stretch);
     }
 
-    /* Flexbox grid system */
+    /* Flexbox System */
     :host([system='flexbox']) .grid-container {
       display: flex;
-      flex-wrap: var(--_flex-wrap, wrap);
-      flex-direction: var(--_flex-direction, row);
-      gap: var(--grid-gap, var(--spacing-3, 16px));
+      flex-wrap: wrap;
+      gap: var(--_grid-gap);
       align-items: var(--_align-items, stretch);
       justify-content: var(--_justify-content, flex-start);
     }
 
-    /* Grid column presets for CSS Grid */
+    /* Column Presets */
     :host([columns='1']) {
-      --grid-columns: repeat(1, 1fr);
+      --_grid-columns: repeat(1, 1fr);
     }
-
     :host([columns='2']) {
-      --grid-columns: repeat(2, 1fr);
+      --_grid-columns: repeat(2, 1fr);
     }
-
     :host([columns='3']) {
-      --grid-columns: repeat(3, 1fr);
+      --_grid-columns: repeat(3, 1fr);
     }
-
     :host([columns='4']) {
-      --grid-columns: repeat(4, 1fr);
+      --_grid-columns: repeat(4, 1fr);
     }
-
+    :host([columns='5']) {
+      --_grid-columns: repeat(5, 1fr);
+    }
     :host([columns='6']) {
-      --grid-columns: repeat(6, 1fr);
+      --_grid-columns: repeat(6, 1fr);
     }
-
+    :host([columns='7']) {
+      --_grid-columns: repeat(7, 1fr);
+    }
+    :host([columns='8']) {
+      --_grid-columns: repeat(8, 1fr);
+    }
+    :host([columns='9']) {
+      --_grid-columns: repeat(9, 1fr);
+    }
+    :host([columns='10']) {
+      --_grid-columns: repeat(10, 1fr);
+    }
+    :host([columns='11']) {
+      --_grid-columns: repeat(11, 1fr);
+    }
     :host([columns='12']) {
-      --grid-columns: repeat(12, 1fr);
+      --_grid-columns: repeat(12, 1fr);
     }
-
     :host([columns='auto']) {
-      --grid-columns: repeat(auto-fit, minmax(200px, 1fr));
+      --_grid-columns: repeat(
+        auto-fit,
+        minmax(var(--min-column-width, 250px), 1fr)
+      );
     }
 
-    :host([columns='none']) {
-      --grid-columns: none;
+    /* Size Variants - Material Design 3 Density Scale */
+    :host([size='small']) {
+      --_grid-gap: var(--spacing-2, 8px);
+      --_grid-padding: var(--spacing-2, 8px);
+      --_grid-border-radius: var(--border-radius-small, 8px);
     }
 
-    /* Gap/spacing variants */
-    :host([gap='none']) {
-      --grid-gap: 0;
+    :host([size='medium']) {
+      --_grid-gap: var(--spacing-3, 16px);
+      --_grid-padding: var(--spacing-3, 16px);
+      --_grid-border-radius: var(--border-radius-medium, 12px);
     }
 
-    :host([gap='xs']) {
-      --grid-gap: var(--spacing-1, 4px);
+    :host([size='large']) {
+      --_grid-gap: var(--spacing-4, 24px);
+      --_grid-padding: var(--spacing-4, 24px);
+      --_grid-border-radius: var(--border-radius-large, 16px);
     }
 
-    :host([gap='sm']) {
-      --grid-gap: var(--spacing-2, 8px);
+    /* Density Variants */
+    :host([density='compact']) {
+      --_grid-gap: var(--spacing-1, 4px);
+      --_grid-padding: var(--spacing-1, 4px);
     }
 
-    :host([gap='md']) {
-      --grid-gap: var(--spacing-3, 16px);
+    :host([density='comfortable']) {
+      --_grid-gap: var(--spacing-3, 16px);
+      --_grid-padding: var(--spacing-3, 16px);
     }
 
-    :host([gap='lg']) {
-      --grid-gap: var(--spacing-4, 24px);
+    :host([density='spacious']) {
+      --_grid-gap: var(--spacing-5, 32px);
+      --_grid-padding: var(--spacing-4, 24px);
     }
 
-    :host([gap='xl']) {
-      --grid-gap: var(--spacing-5, 32px);
-    }
-
-    /* Alignment variants for flexbox */
-    :host([align-items='flex-start']) {
-      --_align-items: flex-start;
-    }
-
-    :host([align-items='flex-end']) {
-      --_align-items: flex-end;
-    }
-
-    :host([align-items='center']) {
-      --_align-items: center;
-    }
-
-    :host([align-items='stretch']) {
-      --_align-items: stretch;
-    }
-
-    :host([align-items='baseline']) {
-      --_align-items: baseline;
-    }
-
-    :host([justify-content='flex-start']) {
-      --_justify-content: flex-start;
-    }
-
-    :host([justify-content='flex-end']) {
-      --_justify-content: flex-end;
-    }
-
-    :host([justify-content='center']) {
-      --_justify-content: center;
-    }
-
-    :host([justify-content='space-between']) {
-      --_justify-content: space-between;
-    }
-
-    :host([justify-content='space-around']) {
-      --_justify-content: space-around;
-    }
-
-    :host([justify-content='space-evenly']) {
-      --_justify-content: space-evenly;
-    }
-
-    /* Direction variants for flexbox */
-    :host([direction='row']) {
-      --_flex-direction: row;
-    }
-
-    :host([direction='row-reverse']) {
-      --_flex-direction: row-reverse;
-    }
-
-    :host([direction='column']) {
-      --_flex-direction: column;
-    }
-
-    :host([direction='column-reverse']) {
-      --_flex-direction: column-reverse;
-    }
-
-    /* Auto flow for CSS Grid */
-    :host([auto-flow='row']) {
-      --_grid-auto-flow: row;
-    }
-
-    :host([auto-flow='column']) {
-      --_grid-auto-flow: column;
-    }
-
-    :host([auto-flow='row dense']) {
-      --_grid-auto-flow: row dense;
-    }
-
-    :host([auto-flow='column dense']) {
-      --_grid-auto-flow: column dense;
-    }
-
-    /* Responsive column adjustments */
-    @media (max-width: 599px) {
-      /* Mobile: Stack most grids */
-      :host([responsive]:not([columns='1'])) {
-        --grid-columns: 1fr;
-        --_flex-direction: column;
-      }
-
-      :host([mobile-columns='1']) {
-        --grid-columns: repeat(1, 1fr);
-      }
-
-      :host([mobile-columns='2']) {
-        --grid-columns: repeat(2, 1fr);
-      }
-    }
-
-    @media (min-width: 600px) and (max-width: 899px) {
-      /* Tablet: Reduce column count */
-      :host([tablet-columns='1']) {
-        --grid-columns: repeat(1, 1fr);
-      }
-
-      :host([tablet-columns='2']) {
-        --grid-columns: repeat(2, 1fr);
-      }
-
-      :host([tablet-columns='3']) {
-        --grid-columns: repeat(3, 1fr);
-      }
-
-      :host([tablet-columns='4']) {
-        --grid-columns: repeat(4, 1fr);
-      }
-    }
-
-    @media (min-width: 900px) {
-      /* Desktop: Full column support */
-      :host([desktop-columns='auto']) {
-        --grid-columns: repeat(auto-fit, minmax(250px, 1fr));
-      }
-    }
-
-    /* Color variants for semantic grids */
+    /* Color Variants - Material Design 3 */
     :host([variant='primary']) {
-      background: var(--color-primary-50, #e3f2fd);
-      border-radius: var(--border-radius-medium, 8px);
-      padding: var(--spacing-3, 16px);
+      --_grid-background-color: var(--color-primary-100, #bbdefb);
+      --_grid-border-color: var(--color-primary-300, #64b5f6);
+      color: var(--color-primary-900, #0d47a1);
     }
 
     :host([variant='secondary']) {
-      background: var(--color-secondary-50, #fce4ec);
-      border-radius: var(--border-radius-medium, 8px);
-      padding: var(--spacing-3, 16px);
+      --_grid-background-color: var(--color-secondary-100, #f8bbd9);
+      --_grid-border-color: var(--color-secondary-300, #f06292);
+      color: var(--color-secondary-900, #880e4f);
     }
 
     :host([variant='success']) {
-      background: var(--color-success-50, #e8f5e8);
-      border-radius: var(--border-radius-medium, 8px);
-      padding: var(--spacing-3, 16px);
+      --_grid-background-color: var(--color-success-100, #c8e6c9);
+      --_grid-border-color: var(--color-success-300, #81c784);
+      color: var(--color-success-900, #1b5e20);
     }
 
     :host([variant='warning']) {
-      background: var(--color-warning-50, #fff3e0);
-      border-radius: var(--border-radius-medium, 8px);
-      padding: var(--spacing-3, 16px);
+      --_grid-background-color: var(--color-warning-100, #ffe0b2);
+      --_grid-border-color: var(--color-warning-300, #ffb74d);
+      color: var(--color-warning-900, #e65100);
     }
 
     :host([variant='error']) {
-      background: var(--color-error-50, #ffebee);
-      border-radius: var(--border-radius-medium, 8px);
-      padding: var(--spacing-3, 16px);
+      --_grid-background-color: var(--color-error-100, #ffcdd2);
+      --_grid-border-color: var(--color-error-300, #e57373);
+      color: var(--color-error-900, #b71c1c);
     }
 
-    /* Elevated grid containers */
+    /* Elevation Support */
     :host([elevated]) {
-      background: var(--surface-surface, #ffffff);
+      --_grid-background-color: var(--surface-surface, #ffffff);
+      --_grid-border-color: var(--color-grey-200, #e0e0e0);
       box-shadow: var(--elevation-1-shadow, 0 1px 3px rgba(0, 0, 0, 0.12));
-      border-radius: var(--border-radius-medium, 8px);
-      padding: var(--spacing-4, 24px);
-      border: 1px solid var(--color-grey-200, #e0e0e0);
     }
 
-    /* Dark mode support */
-    @media (prefers-color-scheme: dark) {
-      :host([variant='primary']) {
-        background: var(--color-primary-900, #0d47a1);
-        border: 1px solid var(--color-primary-700, #1976d2);
-      }
-
-      :host([variant='secondary']) {
-        background: var(--color-secondary-900, #880e4f);
-        border: 1px solid var(--color-secondary-700, #c2185b);
-      }
-
-      :host([variant='success']) {
-        background: var(--color-success-900, #1b5e20);
-        border: 1px solid var(--color-success-700, #388e3c);
-      }
-
-      :host([variant='warning']) {
-        background: var(--color-warning-900, #e65100);
-        border: 1px solid var(--color-warning-700, #f57c00);
-      }
-
-      :host([variant='error']) {
-        background: var(--color-error-900, #b71c1c);
-        border: 1px solid var(--color-error-700, #d32f2f);
-      }
-
-      :host([elevated]) {
-        background: var(--surface-surface, #1e1e1e);
-        border-color: var(--color-grey-700, #616161);
-      }
-    }
-
-    /* Interactive states */
+    /* Interactive States */
     :host([interactive]) {
       cursor: pointer;
+      user-select: none;
     }
 
-    :host([interactive]:hover) {
-      transform: translateY(-1px);
-      box-shadow: var(--elevation-2-shadow, 0 2px 6px rgba(0, 0, 0, 0.15));
+    :host([interactive]:hover:not([disabled])) {
+      transform: var(--_grid-hover-transform);
+      box-shadow: var(--elevation-2-shadow, 0 3px 6px rgba(0, 0, 0, 0.16));
     }
 
     :host([interactive]:focus-visible) {
-      outline: 2px solid var(--color-primary-600, #1976d2);
+      outline: var(--_grid-focus-outline);
       outline-offset: 2px;
     }
 
-    :host([interactive]:active) {
-      transform: translateY(0);
+    :host([interactive]:active:not([disabled])) {
+      transform: translateY(-1px);
+      box-shadow: var(--elevation-1-shadow, 0 1px 3px rgba(0, 0, 0, 0.12));
     }
 
+    /* Loading State */
+    :host([loading]) {
+      position: relative;
+      overflow: hidden;
+    }
+
+    :host([loading])::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 2px;
+      background: linear-gradient(
+        90deg,
+        transparent,
+        var(--color-primary-600, #1976d2),
+        transparent
+      );
+      animation: loading-shimmer 1.5s infinite;
+    }
+
+    @keyframes loading-shimmer {
+      0% {
+        left: -100%;
+      }
+      100% {
+        left: 100%;
+      }
+    }
+
+    /* Disabled State */
     :host([disabled]) {
       opacity: 0.6;
+      cursor: not-allowed;
       pointer-events: none;
       user-select: none;
     }
 
-    /* Dense and comfortable spacing */
-    :host([density='dense']) {
-      --grid-gap: var(--spacing-1, 4px);
+    /* Alignment Options */
+    :host([align='start']) {
+      --_align-items: flex-start;
+    }
+    :host([align='end']) {
+      --_align-items: flex-end;
+    }
+    :host([align='center']) {
+      --_align-items: center;
+    }
+    :host([align='stretch']) {
+      --_align-items: stretch;
+    }
+    :host([align='baseline']) {
+      --_align-items: baseline;
     }
 
-    :host([density='comfortable']) {
-      --grid-gap: var(--spacing-5, 32px);
+    :host([justify='start']) {
+      --_justify-content: flex-start;
+    }
+    :host([justify='end']) {
+      --_justify-content: flex-end;
+    }
+    :host([justify='center']) {
+      --_justify-content: center;
+    }
+    :host([justify='space-between']) {
+      --_justify-content: space-between;
+    }
+    :host([justify='space-around']) {
+      --_justify-content: space-around;
+    }
+    :host([justify='space-evenly']) {
+      --_justify-content: space-evenly;
     }
 
-    /* Print styles */
+    /* Auto Flow for CSS Grid */
+    :host([auto-flow='row']) {
+      --_grid-auto-flow: row;
+    }
+    :host([auto-flow='column']) {
+      --_grid-auto-flow: column;
+    }
+    :host([auto-flow='row-dense']) {
+      --_grid-auto-flow: row dense;
+    }
+    :host([auto-flow='column-dense']) {
+      --_grid-auto-flow: column dense;
+    }
+
+    /* Responsive Breakpoints - Mobile First Approach */
+    /* Mobile (0-599px) - Touch-friendly 44px minimum targets */
+    @media (max-width: 599px) {
+      :host([mobile-columns='1']) {
+        --_grid-columns: repeat(1, 1fr);
+      }
+      :host([mobile-columns='2']) {
+        --_grid-columns: repeat(2, 1fr);
+      }
+      :host([responsive]:not([mobile-columns])) {
+        --_grid-columns: 1fr;
+      }
+
+      /* Ensure touch targets are at least 44px */
+      :host {
+        --_grid-gap: max(var(--spacing-3, 16px), 8px);
+      }
+    }
+
+    /* Tablet (600-899px) */
+    @media (min-width: 600px) and (max-width: 899px) {
+      :host([tablet-columns='1']) {
+        --_grid-columns: repeat(1, 1fr);
+      }
+      :host([tablet-columns='2']) {
+        --_grid-columns: repeat(2, 1fr);
+      }
+      :host([tablet-columns='3']) {
+        --_grid-columns: repeat(3, 1fr);
+      }
+      :host([tablet-columns='4']) {
+        --_grid-columns: repeat(4, 1fr);
+      }
+      :host([tablet-columns='6']) {
+        --_grid-columns: repeat(6, 1fr);
+      }
+      :host([tablet-columns='auto']) {
+        --_grid-columns: repeat(auto-fit, minmax(200px, 1fr));
+      }
+    }
+
+    /* Desktop (900px+) */
+    @media (min-width: 900px) {
+      :host([desktop-columns='1']) {
+        --_grid-columns: repeat(1, 1fr);
+      }
+      :host([desktop-columns='2']) {
+        --_grid-columns: repeat(2, 1fr);
+      }
+      :host([desktop-columns='3']) {
+        --_grid-columns: repeat(3, 1fr);
+      }
+      :host([desktop-columns='4']) {
+        --_grid-columns: repeat(4, 1fr);
+      }
+      :host([desktop-columns='5']) {
+        --_grid-columns: repeat(5, 1fr);
+      }
+      :host([desktop-columns='6']) {
+        --_grid-columns: repeat(6, 1fr);
+      }
+      :host([desktop-columns='7']) {
+        --_grid-columns: repeat(7, 1fr);
+      }
+      :host([desktop-columns='8']) {
+        --_grid-columns: repeat(8, 1fr);
+      }
+      :host([desktop-columns='9']) {
+        --_grid-columns: repeat(9, 1fr);
+      }
+      :host([desktop-columns='10']) {
+        --_grid-columns: repeat(10, 1fr);
+      }
+      :host([desktop-columns='11']) {
+        --_grid-columns: repeat(11, 1fr);
+      }
+      :host([desktop-columns='12']) {
+        --_grid-columns: repeat(12, 1fr);
+      }
+      :host([desktop-columns='auto']) {
+        --_grid-columns: repeat(auto-fit, minmax(250px, 1fr));
+      }
+    }
+
+    /* Dark Mode Support */
+    @media (prefers-color-scheme: dark) {
+      :host([variant='primary']) {
+        --_grid-background-color: var(--color-primary-800, #1565c0);
+        --_grid-border-color: var(--color-primary-600, #1976d2);
+        color: var(--color-primary-100, #bbdefb);
+      }
+
+      :host([variant='secondary']) {
+        --_grid-background-color: var(--color-secondary-800, #ad1457);
+        --_grid-border-color: var(--color-secondary-600, #c2185b);
+        color: var(--color-secondary-100, #f8bbd9);
+      }
+
+      :host([variant='success']) {
+        --_grid-background-color: var(--color-success-800, #2e7d32);
+        --_grid-border-color: var(--color-success-600, #43a047);
+        color: var(--color-success-100, #c8e6c9);
+      }
+
+      :host([variant='warning']) {
+        --_grid-background-color: var(--color-warning-800, #ef6c00);
+        --_grid-border-color: var(--color-warning-600, #ff9800);
+        color: var(--color-warning-100, #ffe0b2);
+      }
+
+      :host([variant='error']) {
+        --_grid-background-color: var(--color-error-800, #c62828);
+        --_grid-border-color: var(--color-error-600, #e53935);
+        color: var(--color-error-100, #ffcdd2);
+      }
+
+      :host([elevated]) {
+        --_grid-background-color: var(--surface-surface, #1e1e1e);
+        --_grid-border-color: var(--color-grey-700, #616161);
+      }
+    }
+
+    /* Print Styles */
     @media print {
       :host {
         box-shadow: none !important;
         background: transparent !important;
-        --grid-gap: var(--spacing-1, 4px);
+        border: 1px solid #ccc !important;
+        --_grid-transition-duration: 0ms;
+        --_grid-gap: var(--spacing-2, 8px);
       }
+    }
+
+    /* High Contrast Mode Support */
+    @media (prefers-contrast: high) {
+      :host {
+        --_grid-border-color: CanvasText;
+        border-width: 2px;
+      }
+    }
+
+    /* Content Styling */
+    ::slotted(*) {
+      box-sizing: border-box;
     }
   `;
 
-  // Grid system properties
+  // Core Properties
   @property({ reflect: true }) system: GridSystem = 'css-grid';
-  @property({ reflect: true }) columns?: GridColumns;
-  @property({ reflect: true }) rows?: GridTemplateRows;
-  @property({ reflect: true }) gap?: ResponsiveValue<SpacingValue>;
-
-  // Layout flow properties
-  @property({ reflect: true, attribute: 'auto-flow' }) autoFlow?: GridAutoFlow;
-  @property({ reflect: true }) direction?: GridDirection;
-
-  // Alignment properties (for flexbox system)
-  @property({ reflect: true, attribute: 'align-items' })
-  alignItems?: AlignItems;
-  @property({ reflect: true, attribute: 'justify-content' })
-  justifyContent?: JustifyContent;
-
-  // Responsive properties
-  @property({ type: Boolean, reflect: true }) responsive = true;
-  @property({ reflect: true, attribute: 'mobile-columns' })
-  mobileColumns?: GridColumns;
-  @property({ reflect: true, attribute: 'tablet-columns' })
-  tabletColumns?: GridColumns;
-  @property({ reflect: true, attribute: 'desktop-columns' })
-  desktopColumns?: GridColumns;
-
-  // Appearance properties
+  @property({ reflect: true, type: Number }) columns: GridColumns = 12;
+  @property({ reflect: true }) size: LayoutSize = 'medium';
   @property({ reflect: true }) variant?: LayoutColor;
-  @property({ type: Boolean, reflect: true }) elevated = false;
-  @property({ reflect: true }) density?: 'dense' | 'default' | 'comfortable';
+  @property({ reflect: true }) density: GridDensity = 'comfortable';
 
-  // Interaction properties
+  // Layout Properties
+  @property({ reflect: true }) align: AlignItems = 'stretch';
+  @property({ reflect: true }) justify: JustifyContent = 'start';
+  @property({ reflect: true, attribute: 'auto-flow' }) autoFlow: GridAutoFlow =
+    'row';
+
+  // Responsive Properties - Mobile First
+  @property({ type: Number, reflect: true, attribute: 'mobile-columns' })
+  mobileColumns?: GridColumns;
+  @property({ type: Number, reflect: true, attribute: 'tablet-columns' })
+  tabletColumns?: GridColumns;
+  @property({ type: Number, reflect: true, attribute: 'desktop-columns' })
+  desktopColumns?: GridColumns;
+  @property({ type: Boolean, reflect: true }) responsive = true;
+
+  // State Properties
+  @property({ type: Boolean, reflect: true }) elevated = false;
   @property({ type: Boolean, reflect: true }) interactive = false;
   @property({ type: Boolean, reflect: true }) disabled = false;
+  @property({ type: Boolean, reflect: true }) loading = false;
 
-  // Custom spacing overrides
+  // Spacing Properties
+  @property({ type: String }) gap?: ResponsiveValue<SpacingValue>;
   @property({ type: String }) padding?: ResponsiveValue<SpacingValue>;
   @property({ type: String }) margin?: ResponsiveValue<SpacingValue>;
 
-  // Accessibility properties
+  // Accessibility Properties
   @property({ type: String }) role: string | null = null;
-  @property({ type: String }) ariaLabel: string | null = null;
-  @property({ type: String }) ariaLabelledBy: string | null = null;
-  @property({ type: String }) ariaDescribedBy: string | null = null;
+  @property({ type: String, attribute: 'aria-label' }) ariaLabel:
+    | string
+    | null = null;
+  @property({ type: String, attribute: 'aria-labelledby' }) ariaLabelledBy:
+    | string
+    | null = null;
+  @property({ type: String, attribute: 'aria-describedby' }) ariaDescribedBy:
+    | string
+    | null = null;
+  @property({ type: String, attribute: 'aria-expanded' }) ariaExpanded:
+    | string
+    | null = null;
 
+  // Form Properties
+  @property({ type: String }) name?: string;
+  @property({ type: String }) value?: string;
+
+  // Internal State
   @state() private _computedStyles: Record<string, string> = {};
+  @state() private _isKeyboardFocused = false;
 
+  // Lifecycle Methods
   protected willUpdate() {
     this._computeStyles();
   }
 
+  protected firstUpdated() {
+    // Set up accessibility attributes
+    this._updateAccessibility();
+  }
+
+  // Private Methods
   private _computeStyles() {
     const styles: Record<string, string> = {};
 
-    // Custom gap
+    // Custom gap spacing
     if (this.gap) {
       styles.gap = this._getSpacingStyle(this.gap);
     }
 
-    // Custom spacing
+    // Custom padding
     if (this.padding) {
       styles.padding = this._getSpacingStyle(this.padding);
     }
 
+    // Custom margin
     if (this.margin) {
       styles.margin = this._getSpacingStyle(this.margin);
     }
@@ -479,6 +623,39 @@ export class Grid extends LitElement {
     return getSpacingValue(value as SpacingValue);
   }
 
+  private _updateAccessibility() {
+    // Set default ARIA attributes based on interactivity
+    if (this.interactive) {
+      this.setAttribute('tabindex', '0');
+      if (!this.role) {
+        this.setAttribute('role', 'button');
+      }
+    } else {
+      this.setAttribute('role', this.role || 'group');
+    }
+
+    // Update ARIA labels
+    if (this.ariaLabel) {
+      this.setAttribute('aria-label', this.ariaLabel);
+    }
+    if (this.ariaLabelledBy) {
+      this.setAttribute('aria-labelledby', this.ariaLabelledBy);
+    }
+    if (this.ariaDescribedBy) {
+      this.setAttribute('aria-describedby', this.ariaDescribedBy);
+    }
+    if (this.ariaExpanded) {
+      this.setAttribute('aria-expanded', this.ariaExpanded);
+    }
+
+    // Set disabled state
+    if (this.disabled) {
+      this.setAttribute('aria-disabled', 'true');
+      this.removeAttribute('tabindex');
+    }
+  }
+
+  // Event Handlers
   private _handleClick(event: MouseEvent) {
     if (this.disabled) {
       event.preventDefault();
@@ -488,7 +665,11 @@ export class Grid extends LitElement {
 
     this.dispatchEvent(
       new CustomEvent('grid-click', {
-        detail: { originalEvent: event },
+        detail: {
+          originalEvent: event,
+          system: this.system,
+          columns: this.columns,
+        },
         bubbles: true,
         composed: true,
       }),
@@ -498,9 +679,19 @@ export class Grid extends LitElement {
   private _handleKeyDown(event: KeyboardEvent) {
     if (this.disabled) return;
 
-    if (this.interactive && (event.key === 'Enter' || event.key === ' ')) {
-      event.preventDefault();
-      this._handleClick(event as any);
+    // Handle interactive grid keyboard navigation
+    if (this.interactive) {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        this._handleClick(event as any);
+      }
+    }
+
+    // Allow arrow key navigation within grid
+    if (
+      ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(event.key)
+    ) {
+      this._handleArrowNavigation(event);
     }
 
     this.dispatchEvent(
@@ -512,24 +703,149 @@ export class Grid extends LitElement {
     );
   }
 
+  private _handleArrowNavigation(event: KeyboardEvent) {
+    const gridItems = this.querySelectorAll('mwc-grid-item, [role="gridcell"]');
+    const currentIndex = Array.from(gridItems).findIndex(
+      (item) => item === document.activeElement,
+    );
+
+    if (currentIndex === -1) return;
+
+    let nextIndex = currentIndex;
+    const columnsPerRow = typeof this.columns === 'number' ? this.columns : 12;
+
+    switch (event.key) {
+      case 'ArrowRight':
+        nextIndex = Math.min(currentIndex + 1, gridItems.length - 1);
+        break;
+      case 'ArrowLeft':
+        nextIndex = Math.max(currentIndex - 1, 0);
+        break;
+      case 'ArrowDown':
+        nextIndex = Math.min(
+          currentIndex + columnsPerRow,
+          gridItems.length - 1,
+        );
+        break;
+      case 'ArrowUp':
+        nextIndex = Math.max(currentIndex - columnsPerRow, 0);
+        break;
+    }
+
+    if (nextIndex !== currentIndex) {
+      event.preventDefault();
+      (gridItems[nextIndex] as HTMLElement)?.focus();
+    }
+  }
+
+  private _handleFocus(event: FocusEvent) {
+    this._isKeyboardFocused = event.detail === 0; // 0 indicates keyboard focus
+
+    this.dispatchEvent(
+      new CustomEvent('grid-focus', {
+        detail: {
+          originalEvent: event,
+          isKeyboardFocus: this._isKeyboardFocused,
+        },
+        bubbles: true,
+        composed: true,
+      }),
+    );
+  }
+
+  private _handleBlur(event: FocusEvent) {
+    this._isKeyboardFocused = false;
+
+    this.dispatchEvent(
+      new CustomEvent('grid-blur', {
+        detail: { originalEvent: event },
+        bubbles: true,
+        composed: true,
+      }),
+    );
+  }
+
+  // Form Integration Methods
+  private _handleFormData(event: Event) {
+    if (this.name && this.value !== undefined) {
+      const formData = (event as any).formData as FormData;
+      formData.append(this.name, String(this.value));
+    }
+  }
+
+  private _handleFormReset() {
+    // Reset to default state if needed
+    this.value = undefined;
+    this.dispatchEvent(
+      new CustomEvent('grid-reset', { bubbles: true, composed: true }),
+    );
+  }
+
+  // Public Methods
+  /**
+   * Focuses the grid element
+   */
+  public focus(options?: FocusOptions) {
+    super.focus(options);
+  }
+
+  /**
+   * Blurs the grid element
+   */
+  public blur() {
+    super.blur();
+  }
+
+  /**
+   * Scrolls to a specific grid item by index
+   */
+  public scrollToItem(index: number) {
+    const items = this.querySelectorAll('mwc-grid-item, [role="gridcell"]');
+    if (items[index]) {
+      (items[index] as HTMLElement).scrollIntoView({
+        behavior: 'smooth',
+        block: 'nearest',
+        inline: 'nearest',
+      });
+    }
+  }
+
+  /**
+   * Returns current grid configuration
+   */
+  public getGridInfo() {
+    return {
+      system: this.system,
+      columns: this.columns,
+      size: this.size,
+      variant: this.variant,
+      density: this.density,
+      interactive: this.interactive,
+      disabled: this.disabled,
+      elevated: this.elevated,
+    };
+  }
+
   protected render() {
-    const classes = {
+    const containerClasses = {
+      'grid-container': true,
       interactive: this.interactive && !this.disabled,
       disabled: this.disabled,
+      loading: this.loading,
+      'keyboard-focused': this._isKeyboardFocused,
     };
 
     return html`
       <div
-        class="grid-container ${classMap(classes)}"
+        part="container"
+        class=${classMap(containerClasses)}
         style=${styleMap(this._computedStyles)}
-        role=${this.role || (this.interactive ? 'button' : 'presentation')}
-        aria-label=${this.ariaLabel || ''}
-        aria-labelledby=${this.ariaLabelledBy || ''}
-        aria-describedby=${this.ariaDescribedBy || ''}
-        aria-disabled=${this.disabled}
-        tabindex=${this.interactive ? '0' : '-1'}
         @click=${this._handleClick}
         @keydown=${this._handleKeyDown}
+        @focus=${this._handleFocus}
+        @blur=${this._handleBlur}
+        @formdata=${this._handleFormData}
+        @formreset=${this._handleFormReset}
       >
         <slot></slot>
       </div>

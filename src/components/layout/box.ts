@@ -1,20 +1,30 @@
 import { LitElement, html, css, CSSResultGroup } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
-import { classMap } from 'lit/directives/class-map.js';
 import { styleMap } from 'lit/directives/style-map.js';
-import {
-  LayoutSize,
-  LayoutColor,
-  LayoutState,
-  SpacingValue,
-  ResponsiveValue,
-  AlignItems,
-  JustifyContent,
-  FlexDirection,
-  FlexWrap,
-  getSpacingValue,
-  getResponsiveValue,
-} from './types.js';
+import { classMap } from 'lit/directives/class-map.js';
+import { ifDefined } from 'lit/directives/if-defined.js';
+import { ResponsiveValue, SpacingValue, getSpacingValue } from './types.js';
+
+// Size variants following Material Design 3
+export type BoxSize = 'small' | 'medium' | 'large';
+
+// Color variants following design token system
+export type BoxVariant =
+  | 'default'
+  | 'primary'
+  | 'secondary'
+  | 'success'
+  | 'warning'
+  | 'error';
+
+// State variants for interactive boxes
+export type BoxState =
+  | 'default'
+  | 'hover'
+  | 'focus'
+  | 'active'
+  | 'disabled'
+  | 'loading';
 
 // Display variants
 export type BoxDisplay =
@@ -27,6 +37,29 @@ export type BoxDisplay =
   | 'inline-grid'
   | 'none';
 
+// Flex direction
+export type FlexDirection = 'row' | 'column' | 'row-reverse' | 'column-reverse';
+
+// Flex wrap
+export type FlexWrap = 'nowrap' | 'wrap' | 'wrap-reverse';
+
+// Align items
+export type AlignItems =
+  | 'flex-start'
+  | 'flex-end'
+  | 'center'
+  | 'stretch'
+  | 'baseline';
+
+// Justify content
+export type JustifyContent =
+  | 'flex-start'
+  | 'flex-end'
+  | 'center'
+  | 'space-between'
+  | 'space-around'
+  | 'space-evenly';
+
 // Position variants
 export type BoxPosition =
   | 'static'
@@ -35,494 +68,768 @@ export type BoxPosition =
   | 'fixed'
   | 'sticky';
 
-// Box elevation levels following Material Design
-export type BoxElevation = 0 | 1 | 2 | 3 | 4 | 5;
+// Elevation levels following Material Design 3
+export type ElevationLevel = 0 | 1 | 2 | 3 | 4 | 5;
 
-// Overflow behaviors
-export type BoxOverflow = 'visible' | 'hidden' | 'scroll' | 'auto';
+// Border radius variants
+export type BorderRadius = 'none' | 'small' | 'medium' | 'large' | 'full';
 
 /**
- * Material Design 3 Box Component
+ * Box Component - Material Design 3 Implementation
  *
- * A flexible container component that serves as a building block for layouts.
- * Supports spacing, colors, positioning, flex/grid layouts, and responsive design.
+ * A versatile container component that follows Material Design 3 specifications.
+ * Provides comprehensive layout utilities, theming, and accessibility features.
  *
  * @element mwc-box
  * @slot - Default slot for content
+ * @fires box-focus - Fired when box receives focus (when interactive)
+ * @fires box-blur - Fired when box loses focus (when interactive)
+ * @fires box-click - Fired when box is clicked (when interactive)
+ * @fires box-hover - Fired when box is hovered (when interactive)
+ * @fires box-state-change - Fired when interactive state changes
  *
- * @cssprop --box-background - Custom background color
- * @cssprop --box-color - Custom text color
- * @cssprop --box-border-color - Custom border color
- * @cssprop --box-border-radius - Custom border radius
- * @cssprop --box-shadow - Custom box shadow
- * @cssprop --box-transition - Custom transition timing
+ * @cssprop --box-color - Text color override
+ * @cssprop --box-background-color - Background color override
+ * @cssprop --box-border-color - Border color override
+ * @cssprop --box-border-radius - Border radius override
+ * @cssprop --box-elevation - Box shadow override
+ * @cssprop --box-transition-duration - Animation duration override (default: 280ms)
+ * @cssprop --box-transition-easing - Animation easing override (default: cubic-bezier(0.4, 0.0, 0.2, 1))
  */
 @customElement('mwc-box')
 export class Box extends LitElement {
   static styles: CSSResultGroup = css`
     :host {
-      --_box-transition: all 250ms cubic-bezier(0.2, 0, 0, 1);
-
-      /* CSS custom properties for theming */
-      --_background: transparent;
-      --_color: inherit;
-      --_border-color: transparent;
-      --_border-radius: 0;
-      --_shadow: none;
-
-      display: var(--_display, block);
-      position: var(--_position, static);
-      background: var(--box-background, var(--_background));
-      color: var(--box-color, var(--_color));
-      border: var(--_border-width, 0) var(--_border-style, solid)
-        var(--box-border-color, var(--_border-color));
-      border-radius: var(--box-border-radius, var(--_border-radius));
-      box-shadow: var(--box-shadow, var(--_shadow));
-      transition: var(--box-transition, var(--_box-transition));
+      display: contents;
       box-sizing: border-box;
-      min-width: 0;
+    }
 
-      /* Respect reduced motion */
+    .box {
+      /* Base styles */
+      position: relative;
+      box-sizing: border-box;
+      outline: none;
+      border: none;
+      font-family: var(--font-family-base, 'Roboto', sans-serif);
+
+      /* Material Design 3 motion */
+      transition-property: background-color, color, border-color, box-shadow,
+        transform;
+      transition-duration: var(--box-transition-duration, 280ms);
+      transition-timing-function: var(
+        --box-transition-easing,
+        cubic-bezier(0.4, 0, 0.2, 1)
+      );
+
+      /* Respect reduced motion preference */
       @media (prefers-reduced-motion: reduce) {
-        --_box-transition: none;
+        transition: none;
       }
-
-      /* RTL support */
-      direction: var(--text-direction, ltr);
     }
 
     /* Size variants */
-    :host([size='small']) {
-      --_min-height: var(--size-small, 32px);
-      min-height: var(--_min-height);
+    .box--size-small {
+      min-height: var(--spacing-6, 24px);
+      padding: var(--spacing-1, 4px) var(--spacing-2, 8px);
     }
 
-    :host([size='medium']) {
-      --_min-height: var(--size-medium, 44px);
-      min-height: var(--_min-height);
+    .box--size-medium {
+      min-height: var(--spacing-11, 44px); /* Touch-friendly minimum */
+      padding: var(--spacing-2, 8px) var(--spacing-3, 12px);
     }
 
-    :host([size='large']) {
-      --_min-height: var(--size-large, 56px);
-      min-height: var(--_min-height);
+    .box--size-large {
+      min-height: var(--spacing-14, 56px);
+      padding: var(--spacing-3, 12px) var(--spacing-4, 16px);
     }
 
     /* Color variants */
-    :host([variant='primary']) {
-      --_background: var(--color-primary-50, #e3f2fd);
-      --_color: var(--color-primary-900, #0d47a1);
-      --_border-color: var(--color-primary-200, #90caf9);
+    .box--variant-default {
+      background-color: var(
+        --box-background-color,
+        var(--color-surface, #fefbff)
+      );
+      color: var(--box-color, var(--color-on-surface, #1c1b1f));
+      border: 1px solid var(--box-border-color, var(--color-outline, #79747e));
     }
 
-    :host([variant='secondary']) {
-      --_background: var(--color-secondary-50, #fce4ec);
-      --_color: var(--color-secondary-900, #880e4f);
-      --_border-color: var(--color-secondary-200, #f48fb1);
+    .box--variant-primary {
+      background-color: var(
+        --box-background-color,
+        var(--color-primary, #6750a4)
+      );
+      color: var(--box-color, var(--color-on-primary, #ffffff));
+      border: 1px solid var(--box-border-color, var(--color-primary, #6750a4));
     }
 
-    :host([variant='success']) {
-      --_background: var(--color-success-50, #e8f5e8);
-      --_color: var(--color-success-900, #1b5e20);
-      --_border-color: var(--color-success-200, #a5d6a7);
+    .box--variant-secondary {
+      background-color: var(
+        --box-background-color,
+        var(--color-secondary, #625b71)
+      );
+      color: var(--box-color, var(--color-on-secondary, #ffffff));
+      border: 1px solid var(--box-border-color, var(--color-secondary, #625b71));
     }
 
-    :host([variant='warning']) {
-      --_background: var(--color-warning-50, #fff3e0);
-      --_color: var(--color-warning-900, #e65100);
-      --_border-color: var(--color-warning-200, #ffcc80);
+    .box--variant-success {
+      background-color: var(
+        --box-background-color,
+        var(--color-success, #006d3b)
+      );
+      color: var(--box-color, var(--color-on-success, #ffffff));
+      border: 1px solid var(--box-border-color, var(--color-success, #006d3b));
     }
 
-    :host([variant='error']) {
-      --_background: var(--color-error-50, #ffebee);
-      --_color: var(--color-error-900, #b71c1c);
-      --_border-color: var(--color-error-200, #ef9a9a);
+    .box--variant-warning {
+      background-color: var(
+        --box-background-color,
+        var(--color-warning, #8b5a2b)
+      );
+      color: var(--box-color, var(--color-on-warning, #ffffff));
+      border: 1px solid var(--box-border-color, var(--color-warning, #8b5a2b));
     }
 
-    /* State variants */
-    :host([state='hover']:hover),
-    :host(.hover) {
-      --_shadow: var(--elevation-1-shadow, 0 1px 3px rgba(0, 0, 0, 0.12));
-      transform: translateY(-1px);
+    .box--variant-error {
+      background-color: var(
+        --box-background-color,
+        var(--color-error, #ba1a1a)
+      );
+      color: var(--box-color, var(--color-on-error, #ffffff));
+      border: 1px solid var(--box-border-color, var(--color-error, #ba1a1a));
     }
 
-    :host([state='focus']:focus-visible),
-    :host(.focus) {
-      outline: 2px solid var(--color-primary-600, #1976d2);
+    /* Interactive states */
+    .box--interactive {
+      cursor: pointer;
+      user-select: none;
+
+      /* Touch feedback */
+      -webkit-touch-callout: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .box--interactive:hover:not(.box--disabled) {
+      transform: var(--box-hover-transform, translateY(-1px));
+    }
+
+    .box--interactive:focus-visible {
+      outline: 2px solid var(--color-primary, #6750a4);
       outline-offset: 2px;
     }
 
-    :host([state='active']:active),
-    :host(.active) {
-      --_shadow: var(--elevation-2-shadow, 0 1px 5px rgba(0, 0, 0, 0.2));
-      transform: translateY(1px);
+    .box--interactive:active:not(.box--disabled) {
+      transform: var(--box-active-transform, translateY(0px));
     }
 
-    :host([state='disabled']),
-    :host([disabled]),
-    :host(.disabled) {
-      opacity: 0.6;
+    /* Disabled state */
+    .box--disabled {
+      opacity: 0.38;
+      cursor: not-allowed;
       pointer-events: none;
-      user-select: none;
     }
 
-    :host([state='loading']),
-    :host(.loading) {
+    /* Loading state */
+    .box--loading {
       position: relative;
-      overflow: hidden;
+      pointer-events: none;
     }
 
-    :host([state='loading'])::before,
-    :host(.loading)::before {
+    .box--loading::after {
       content: '';
       position: absolute;
-      top: 0;
-      left: -100%;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(
-        90deg,
-        transparent,
-        rgba(255, 255, 255, 0.2),
-        transparent
-      );
-      animation: loading 1.5s infinite;
+      top: 50%;
+      left: 50%;
+      width: 16px;
+      height: 16px;
+      margin: -8px 0 0 -8px;
+      border: 2px solid currentColor;
+      border-top-color: transparent;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
     }
 
-    @keyframes loading {
+    @keyframes spin {
       to {
-        left: 100%;
+        transform: rotate(360deg);
       }
     }
 
-    /* Elevation styles */
-    :host([elevation='1']) {
-      --_shadow: var(--elevation-1-shadow, 0 1px 3px rgba(0, 0, 0, 0.12));
+    /* Elevation levels */
+    .box--elevation-0 {
+      box-shadow: var(--box-elevation, none);
     }
 
-    :host([elevation='2']) {
-      --_shadow: var(--elevation-2-shadow, 0 1px 5px rgba(0, 0, 0, 0.2));
+    .box--elevation-1 {
+      box-shadow: var(
+        --box-elevation,
+        var(
+          --elevation-1,
+          0px 1px 3px rgba(0, 0, 0, 0.12),
+          0px 1px 2px rgba(0, 0, 0, 0.24)
+        )
+      );
     }
 
-    :host([elevation='3']) {
-      --_shadow: var(--elevation-3-shadow, 0 1px 8px rgba(0, 0, 0, 0.2));
+    .box--elevation-2 {
+      box-shadow: var(
+        --box-elevation,
+        var(
+          --elevation-2,
+          0px 3px 6px rgba(0, 0, 0, 0.16),
+          0px 3px 6px rgba(0, 0, 0, 0.23)
+        )
+      );
     }
 
-    :host([elevation='4']) {
-      --_shadow: var(--elevation-4-shadow, 0 1px 10px rgba(0, 0, 0, 0.2));
+    .box--elevation-3 {
+      box-shadow: var(
+        --box-elevation,
+        var(
+          --elevation-3,
+          0px 10px 20px rgba(0, 0, 0, 0.19),
+          0px 6px 6px rgba(0, 0, 0, 0.23)
+        )
+      );
     }
 
-    :host([elevation='5']) {
-      --_shadow: var(--elevation-5-shadow, 0 1px 14px rgba(0, 0, 0, 0.2));
+    .box--elevation-4 {
+      box-shadow: var(
+        --box-elevation,
+        var(
+          --elevation-4,
+          0px 14px 28px rgba(0, 0, 0, 0.25),
+          0px 10px 10px rgba(0, 0, 0, 0.22)
+        )
+      );
     }
 
-    /* Display variants */
-    :host([display='flex']) {
-      --_display: flex;
+    .box--elevation-5 {
+      box-shadow: var(
+        --box-elevation,
+        var(
+          --elevation-5,
+          0px 19px 38px rgba(0, 0, 0, 0.3),
+          0px 15px 12px rgba(0, 0, 0, 0.22)
+        )
+      );
     }
 
-    :host([display='inline-flex']) {
-      --_display: inline-flex;
+    /* Border radius variants */
+    .box--radius-none {
+      border-radius: 0;
     }
 
-    :host([display='grid']) {
-      --_display: grid;
+    .box--radius-small {
+      border-radius: var(--box-border-radius, var(--border-radius-small, 4px));
     }
 
-    :host([display='inline-grid']) {
-      --_display: inline-grid;
+    .box--radius-medium {
+      border-radius: var(--box-border-radius, var(--border-radius-medium, 8px));
     }
 
-    :host([display='inline']) {
-      --_display: inline;
+    .box--radius-large {
+      border-radius: var(--box-border-radius, var(--border-radius-large, 16px));
     }
 
-    :host([display='inline-block']) {
-      --_display: inline-block;
+    .box--radius-full {
+      border-radius: var(--box-border-radius, 9999px);
     }
 
-    :host([display='none']) {
-      --_display: none;
+    /* RTL support */
+    :host([dir='rtl']) .box {
+      direction: rtl;
     }
 
-    /* Position variants */
-    :host([position='relative']) {
-      --_position: relative;
-    }
-
-    :host([position='absolute']) {
-      --_position: absolute;
-    }
-
-    :host([position='fixed']) {
-      --_position: fixed;
-    }
-
-    :host([position='sticky']) {
-      --_position: sticky;
-    }
-
-    /* Focus management for interactive elements */
-    :host([tabindex]) {
-      cursor: pointer;
-    }
-
-    :host([tabindex]:focus-visible) {
-      outline: 2px solid var(--color-primary-600, #1976d2);
-      outline-offset: 2px;
-    }
-
-    /* Dark mode support */
+    /* Dark theme support */
     @media (prefers-color-scheme: dark) {
-      :host([variant='primary']) {
-        --_background: var(--color-primary-900, #0d47a1);
-        --_color: var(--color-primary-50, #e3f2fd);
-      }
-
-      :host([variant='secondary']) {
-        --_background: var(--color-secondary-900, #880e4f);
-        --_color: var(--color-secondary-50, #fce4ec);
-      }
-
-      :host([variant='success']) {
-        --_background: var(--color-success-900, #1b5e20);
-        --_color: var(--color-success-50, #e8f5e8);
-      }
-
-      :host([variant='warning']) {
-        --_background: var(--color-warning-900, #e65100);
-        --_color: var(--color-warning-50, #fff3e0);
-      }
-
-      :host([variant='error']) {
-        --_background: var(--color-error-900, #b71c1c);
-        --_color: var(--color-error-50, #ffebee);
+      .box--variant-default {
+        background-color: var(
+          --box-background-color,
+          var(--color-surface-dark, #1c1b1f)
+        );
+        color: var(--box-color, var(--color-on-surface-dark, #e6e1e5));
+        border-color: var(
+          --box-border-color,
+          var(--color-outline-dark, #938f99)
+        );
       }
     }
 
-    /* Responsive breakpoints */
-    @media (max-width: 599px) {
-      :host(.mobile-hide) {
-        display: none !important;
+    /* High contrast support */
+    @media (prefers-contrast: high) {
+      .box {
+        border-width: 2px;
       }
     }
 
-    @media (min-width: 600px) and (max-width: 899px) {
-      :host(.tablet-hide) {
-        display: none !important;
-      }
+    /* Focus enhancement for keyboard navigation */
+    .box--interactive:focus-visible {
+      outline-width: 3px;
     }
 
-    @media (min-width: 900px) {
-      :host(.desktop-hide) {
-        display: none !important;
+    /* Touch target enhancement */
+    @media (pointer: coarse) {
+      .box--interactive {
+        min-height: var(--touch-target-size, 44px);
+        min-width: var(--touch-target-size, 44px);
       }
-    }
-
-    .content {
-      width: 100%;
-      height: 100%;
     }
   `;
 
-  // Layout properties
-  @property({ reflect: true }) display: BoxDisplay = 'block';
-  @property({ reflect: true }) position: BoxPosition = 'static';
+  // Core properties
+  @property({ reflect: true }) size: BoxSize = 'medium';
+  @property({ reflect: true }) variant: BoxVariant = 'default';
+  @property({ type: Boolean, reflect: true }) interactive = false;
+  @property({ type: Boolean, reflect: true }) disabled = false;
+  @property({ type: Boolean, reflect: true }) loading = false;
+  @property({ type: Number, reflect: true }) elevation: ElevationLevel = 0;
+  @property({ reflect: true }) borderRadius: BorderRadius = 'medium';
 
-  // Spacing properties
-  @property({ type: String }) margin?: ResponsiveValue<SpacingValue>;
-  @property({ type: String }) padding?: ResponsiveValue<SpacingValue>;
-  @property({ type: String }) mt?: ResponsiveValue<SpacingValue>; // margin-top
-  @property({ type: String }) mr?: ResponsiveValue<SpacingValue>; // margin-right
-  @property({ type: String }) mb?: ResponsiveValue<SpacingValue>; // margin-bottom
-  @property({ type: String }) ml?: ResponsiveValue<SpacingValue>; // margin-left
-  @property({ type: String }) mx?: ResponsiveValue<SpacingValue>; // margin-horizontal
-  @property({ type: String }) my?: ResponsiveValue<SpacingValue>; // margin-vertical
-  @property({ type: String }) pt?: ResponsiveValue<SpacingValue>; // padding-top
-  @property({ type: String }) pr?: ResponsiveValue<SpacingValue>; // padding-right
-  @property({ type: String }) pb?: ResponsiveValue<SpacingValue>; // padding-bottom
-  @property({ type: String }) pl?: ResponsiveValue<SpacingValue>; // padding-left
-  @property({ type: String }) px?: ResponsiveValue<SpacingValue>; // padding-horizontal
-  @property({ type: String }) py?: ResponsiveValue<SpacingValue>; // padding-vertical
+  // Layout properties
+  @property() display?: ResponsiveValue<BoxDisplay>;
+  @property() position?: ResponsiveValue<BoxPosition>;
+  @property() top?: ResponsiveValue<string>;
+  @property() right?: ResponsiveValue<string>;
+  @property() bottom?: ResponsiveValue<string>;
+  @property() left?: ResponsiveValue<string>;
+  @property() zIndex?: ResponsiveValue<number>;
 
   // Flexbox properties
-  @property({ type: String }) alignItems?: AlignItems;
-  @property({ type: String }) justifyContent?: JustifyContent;
-  @property({ type: String }) flexDirection?: FlexDirection;
-  @property({ type: String }) flexWrap?: FlexWrap;
-  @property({ type: String }) gap?: ResponsiveValue<SpacingValue>;
+  @property() flexDirection?: ResponsiveValue<FlexDirection>;
+  @property() flexWrap?: ResponsiveValue<FlexWrap>;
+  @property() alignItems?: ResponsiveValue<AlignItems>;
+  @property() justifyContent?: ResponsiveValue<JustifyContent>;
+  @property() gap?: ResponsiveValue<SpacingValue>;
 
-  // Size and dimensions
-  @property({ reflect: true }) size?: LayoutSize;
-  @property({ type: String }) width?: ResponsiveValue<string>;
-  @property({ type: String }) height?: ResponsiveValue<string>;
-  @property({ type: String }) minWidth?: ResponsiveValue<string>;
-  @property({ type: String }) minHeight?: ResponsiveValue<string>;
-  @property({ type: String }) maxWidth?: ResponsiveValue<string>;
-  @property({ type: String }) maxHeight?: ResponsiveValue<string>;
+  // Spacing properties (margin)
+  @property() m?: ResponsiveValue<SpacingValue>;
+  @property() mt?: ResponsiveValue<SpacingValue>;
+  @property() mr?: ResponsiveValue<SpacingValue>;
+  @property() mb?: ResponsiveValue<SpacingValue>;
+  @property() ml?: ResponsiveValue<SpacingValue>;
+  @property() mx?: ResponsiveValue<SpacingValue>;
+  @property() my?: ResponsiveValue<SpacingValue>;
 
-  // Appearance properties
-  @property({ reflect: true }) variant?: LayoutColor;
-  @property({ reflect: true }) state?: LayoutState;
-  @property({ type: Number, reflect: true }) elevation?: BoxElevation;
-  @property({ type: String }) overflow?: BoxOverflow;
+  // Spacing properties (padding)
+  @property() p?: ResponsiveValue<SpacingValue>;
+  @property() pt?: ResponsiveValue<SpacingValue>;
+  @property() pr?: ResponsiveValue<SpacingValue>;
+  @property() pb?: ResponsiveValue<SpacingValue>;
+  @property() pl?: ResponsiveValue<SpacingValue>;
+  @property() px?: ResponsiveValue<SpacingValue>;
+  @property() py?: ResponsiveValue<SpacingValue>;
 
-  // Border properties
-  @property({ type: String }) borderRadius?: ResponsiveValue<string>;
-  @property({ type: String }) border?: string;
-  @property({ type: String }) borderTop?: string;
-  @property({ type: String }) borderRight?: string;
-  @property({ type: String }) borderBottom?: string;
-  @property({ type: String }) borderLeft?: string;
+  // Size properties
+  @property() width?: ResponsiveValue<string>;
+  @property() height?: ResponsiveValue<string>;
+  @property() minWidth?: ResponsiveValue<string>;
+  @property() minHeight?: ResponsiveValue<string>;
+  @property() maxWidth?: ResponsiveValue<string>;
+  @property() maxHeight?: ResponsiveValue<string>;
 
-  // Interaction properties
-  @property({ type: Boolean, reflect: true }) disabled = false;
-  @property({ type: Boolean, reflect: true }) interactive = false;
+  // Visual properties
+  @property() bgcolor?: ResponsiveValue<string>;
+  @property() color?: ResponsiveValue<string>;
+  @property() border?: ResponsiveValue<string>;
+  @property() customBorderRadius?: ResponsiveValue<string>;
+  @property() boxShadow?: ResponsiveValue<string>;
+  @property() overflow?: ResponsiveValue<string>;
 
-  // Accessibility properties
-  @property({ type: String }) role: string | null = null;
-  @property({ type: String }) ariaLabel: string | null = null;
-  @property({ type: String }) ariaLabelledBy: string | null = null;
-  @property({ type: String }) ariaDescribedBy: string | null = null;
+  // Accessibility
+  @property() role: string | null = null;
+  @property() ariaLabel: string | null = null;
+  @property() ariaLabelledby: string | null = null;
+  @property() ariaDescribedby: string | null = null;
+  @property({ type: Number }) tabIndex: number = -1;
 
-  @state() private _computedStyles: Record<string, string> = {};
+  // Form integration
+  @property() name?: string;
+  @property() value?: string;
 
-  protected willUpdate() {
-    this._computeStyles();
+  // Internal state
+  @state() private _currentState: BoxState = 'default';
+  @state() private _hasFocus = false;
+
+  // Form data support
+  static formAssociated = true;
+  private _internals: ElementInternals;
+
+  constructor() {
+    super();
+    this._internals = this.attachInternals();
   }
 
-  private _computeStyles() {
+  // Lifecycle methods
+  connectedCallback() {
+    super.connectedCallback();
+    this._setupEventListeners();
+  }
+
+  disconnectedCallback() {
+    super.disconnectedCallback();
+    this._cleanupEventListeners();
+  }
+
+  // Event handling setup
+  private _setupEventListeners() {
+    if (this.interactive) {
+      this.addEventListener('focus', this._onFocus);
+      this.addEventListener('blur', this._onBlur);
+      this.addEventListener('click', this._onClick);
+      this.addEventListener('mouseenter', this._onMouseEnter);
+      this.addEventListener('mouseleave', this._onMouseLeave);
+      this.addEventListener('keydown', this._onKeyDown);
+    }
+  }
+
+  private _cleanupEventListeners() {
+    this.removeEventListener('focus', this._onFocus);
+    this.removeEventListener('blur', this._onBlur);
+    this.removeEventListener('click', this._onClick);
+    this.removeEventListener('mouseenter', this._onMouseEnter);
+    this.removeEventListener('mouseleave', this._onMouseLeave);
+    this.removeEventListener('keydown', this._onKeyDown);
+  }
+
+  // Event handlers
+  private _onFocus = (event: FocusEvent) => {
+    if (this.disabled || !this.interactive) return;
+    this._hasFocus = true;
+    this._updateState('focus');
+    this._dispatchCustomEvent('box-focus', { originalEvent: event });
+  };
+
+  private _onBlur = (event: FocusEvent) => {
+    if (this.disabled || !this.interactive) return;
+    this._hasFocus = false;
+    this._updateState('default');
+    this._dispatchCustomEvent('box-blur', { originalEvent: event });
+  };
+
+  private _onClick = (event: MouseEvent) => {
+    if (this.disabled || !this.interactive) return;
+    this._updateState('active');
+    this._dispatchCustomEvent('box-click', { originalEvent: event });
+
+    // Reset to focus state after click
+    setTimeout(() => {
+      if (this._hasFocus) {
+        this._updateState('focus');
+      } else {
+        this._updateState('default');
+      }
+    }, 150);
+  };
+
+  private _onMouseEnter = (event: MouseEvent) => {
+    if (this.disabled || !this.interactive) return;
+    if (!this._hasFocus) {
+      this._updateState('hover');
+    }
+    this._dispatchCustomEvent('box-hover', {
+      originalEvent: event,
+      type: 'enter',
+    });
+  };
+
+  private _onMouseLeave = (event: MouseEvent) => {
+    if (this.disabled || !this.interactive) return;
+    if (!this._hasFocus) {
+      this._updateState('default');
+    }
+    this._dispatchCustomEvent('box-hover', {
+      originalEvent: event,
+      type: 'leave',
+    });
+  };
+
+  private _onKeyDown = (event: KeyboardEvent) => {
+    if (this.disabled || !this.interactive) return;
+
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      this._onClick(event as any);
+    }
+  };
+
+  // State management
+  private _updateState(newState: BoxState) {
+    const oldState = this._currentState;
+    this._currentState = newState;
+
+    if (oldState !== newState) {
+      this._dispatchCustomEvent('box-state-change', {
+        previousState: oldState,
+        currentState: newState,
+      });
+    }
+  }
+
+  // Custom event dispatcher
+  private _dispatchCustomEvent(type: string, detail: any) {
+    this.dispatchEvent(
+      new CustomEvent(type, {
+        detail,
+        bubbles: true,
+        composed: true,
+      }),
+    );
+  }
+
+  // Style computation helpers
+  private _getResponsiveStyle(value: ResponsiveValue<any> | undefined): any {
+    if (value === undefined) return undefined;
+
+    if (typeof value === 'object' && value !== null) {
+      // For responsive objects, return the first available value
+      // In a real implementation, you'd use media queries or container queries
+      const values = Object.values(value);
+      return values[0];
+    }
+
+    return value;
+  }
+
+  private _getSpacingStyle(
+    value: ResponsiveValue<SpacingValue> | undefined,
+  ): string | undefined {
+    if (value === undefined) return undefined;
+
+    const resolved = this._getResponsiveStyle(value);
+    return resolved !== undefined ? getSpacingValue(resolved) : undefined;
+  }
+
+  private _buildDynamicStyles(): Record<string, string> {
     const styles: Record<string, string> = {};
 
-    // Spacing styles
-    if (this.margin) styles.margin = this._getSpacingStyle(this.margin);
-    if (this.padding) styles.padding = this._getSpacingStyle(this.padding);
-    if (this.mt) styles.marginTop = this._getSpacingStyle(this.mt);
-    if (this.mr) styles.marginRight = this._getSpacingStyle(this.mr);
-    if (this.mb) styles.marginBottom = this._getSpacingStyle(this.mb);
-    if (this.ml) styles.marginLeft = this._getSpacingStyle(this.ml);
-    if (this.mx) {
-      styles.marginLeft = this._getSpacingStyle(this.mx);
-      styles.marginRight = this._getSpacingStyle(this.mx);
-    }
-    if (this.my) {
-      styles.marginTop = this._getSpacingStyle(this.my);
-      styles.marginBottom = this._getSpacingStyle(this.my);
-    }
-    if (this.pt) styles.paddingTop = this._getSpacingStyle(this.pt);
-    if (this.pr) styles.paddingRight = this._getSpacingStyle(this.pr);
-    if (this.pb) styles.paddingBottom = this._getSpacingStyle(this.pb);
-    if (this.pl) styles.paddingLeft = this._getSpacingStyle(this.pl);
-    if (this.px) {
-      styles.paddingLeft = this._getSpacingStyle(this.px);
-      styles.paddingRight = this._getSpacingStyle(this.px);
-    }
-    if (this.py) {
-      styles.paddingTop = this._getSpacingStyle(this.py);
-      styles.paddingBottom = this._getSpacingStyle(this.py);
-    }
+    // Display and positioning
+    const display = this._getResponsiveStyle(this.display);
+    if (display) styles.display = display;
 
-    // Flexbox styles
-    if (this.alignItems) styles.alignItems = this.alignItems;
-    if (this.justifyContent) styles.justifyContent = this.justifyContent;
-    if (this.flexDirection) styles.flexDirection = this.flexDirection;
-    if (this.flexWrap) styles.flexWrap = this.flexWrap;
-    if (this.gap) styles.gap = this._getSpacingStyle(this.gap);
+    const position = this._getResponsiveStyle(this.position);
+    if (position) styles.position = position;
 
-    // Size styles
-    if (this.width) styles.width = this._getDimensionStyle(this.width);
-    if (this.height) styles.height = this._getDimensionStyle(this.height);
-    if (this.minWidth) styles.minWidth = this._getDimensionStyle(this.minWidth);
-    if (this.minHeight)
-      styles.minHeight = this._getDimensionStyle(this.minHeight);
-    if (this.maxWidth) styles.maxWidth = this._getDimensionStyle(this.maxWidth);
-    if (this.maxHeight)
-      styles.maxHeight = this._getDimensionStyle(this.maxHeight);
+    const top = this._getResponsiveStyle(this.top);
+    if (top) styles.top = top;
 
-    // Border styles
-    if (this.borderRadius)
-      styles.borderRadius = this._getDimensionStyle(this.borderRadius);
-    if (this.border) styles.border = this.border;
-    if (this.borderTop) styles.borderTop = this.borderTop;
-    if (this.borderRight) styles.borderRight = this.borderRight;
-    if (this.borderBottom) styles.borderBottom = this.borderBottom;
-    if (this.borderLeft) styles.borderLeft = this.borderLeft;
+    const right = this._getResponsiveStyle(this.right);
+    if (right) styles.right = right;
 
-    // Other styles
-    if (this.overflow) styles.overflow = this.overflow;
+    const bottom = this._getResponsiveStyle(this.bottom);
+    if (bottom) styles.bottom = bottom;
 
-    this._computedStyles = styles;
-  }
+    const left = this._getResponsiveStyle(this.left);
+    if (left) styles.left = left;
 
-  private _getSpacingStyle(value: ResponsiveValue<SpacingValue>): string {
-    if (typeof value === 'object' && value !== null) {
-      // Handle responsive values
-      const responsiveValue = value as Record<string, SpacingValue>;
-      return Object.entries(responsiveValue)
-        .map(([key, val]) => getSpacingValue(val))
-        .join(' ');
-    }
-    return getSpacingValue(value as SpacingValue);
-  }
+    const zIndex = this._getResponsiveStyle(this.zIndex);
+    if (zIndex !== undefined) styles.zIndex = String(zIndex);
 
-  private _getDimensionStyle(value: ResponsiveValue<string>): string {
-    if (typeof value === 'object' && value !== null) {
-      const responsiveValue = value as Record<string, string>;
-      return Object.values(responsiveValue)[0] || '';
-    }
-    return value as string;
-  }
-
-  private _handleClick(event: MouseEvent) {
-    if (this.disabled) {
-      event.preventDefault();
-      event.stopPropagation();
-      return;
+    // Auto-set display: flex when flex properties are used
+    const hasFlexProps =
+      this.flexDirection ||
+      this.flexWrap ||
+      this.alignItems ||
+      this.justifyContent ||
+      this.gap;
+    if (hasFlexProps && !this.display) {
+      styles.display = 'flex';
     }
 
-    this.dispatchEvent(
-      new CustomEvent('box-click', {
-        detail: { originalEvent: event },
-        bubbles: true,
-        composed: true,
-      }),
+    // Flexbox properties
+    const flexDirection = this._getResponsiveStyle(this.flexDirection);
+    if (flexDirection) styles.flexDirection = flexDirection;
+
+    const flexWrap = this._getResponsiveStyle(this.flexWrap);
+    if (flexWrap) styles.flexWrap = flexWrap;
+
+    const alignItems = this._getResponsiveStyle(this.alignItems);
+    if (alignItems) styles.alignItems = alignItems;
+
+    const justifyContent = this._getResponsiveStyle(this.justifyContent);
+    if (justifyContent) styles.justifyContent = justifyContent;
+
+    const gap = this._getSpacingStyle(this.gap);
+    if (gap) styles.gap = gap;
+
+    // Margin properties
+    const m = this._getSpacingStyle(this.m);
+    if (m) styles.margin = m;
+
+    const mt = this._getSpacingStyle(this.mt);
+    if (mt) styles.marginTop = mt;
+
+    const mr = this._getSpacingStyle(this.mr);
+    if (mr) styles.marginRight = mr;
+
+    const mb = this._getSpacingStyle(this.mb);
+    if (mb) styles.marginBottom = mb;
+
+    const ml = this._getSpacingStyle(this.ml);
+    if (ml) styles.marginLeft = ml;
+
+    const mx = this._getSpacingStyle(this.mx);
+    if (mx) {
+      styles.marginLeft = mx;
+      styles.marginRight = mx;
+    }
+
+    const my = this._getSpacingStyle(this.my);
+    if (my) {
+      styles.marginTop = my;
+      styles.marginBottom = my;
+    }
+
+    // Padding properties (only if not using size variants)
+    if (
+      !this.p &&
+      !this.pt &&
+      !this.pr &&
+      !this.pb &&
+      !this.pl &&
+      !this.px &&
+      !this.py
+    ) {
+      // Let CSS classes handle padding via size variants
+    } else {
+      // Override with custom padding
+      const p = this._getSpacingStyle(this.p);
+      if (p) styles.padding = p;
+
+      const pt = this._getSpacingStyle(this.pt);
+      if (pt) styles.paddingTop = pt;
+
+      const pr = this._getSpacingStyle(this.pr);
+      if (pr) styles.paddingRight = pr;
+
+      const pb = this._getSpacingStyle(this.pb);
+      if (pb) styles.paddingBottom = pb;
+
+      const pl = this._getSpacingStyle(this.pl);
+      if (pl) styles.paddingLeft = pl;
+
+      const px = this._getSpacingStyle(this.px);
+      if (px) {
+        styles.paddingLeft = px;
+        styles.paddingRight = px;
+      }
+
+      const py = this._getSpacingStyle(this.py);
+      if (py) {
+        styles.paddingTop = py;
+        styles.paddingBottom = py;
+      }
+    }
+
+    // Size properties
+    const width = this._getResponsiveStyle(this.width);
+    if (width) styles.width = width;
+
+    const height = this._getResponsiveStyle(this.height);
+    if (height) styles.height = height;
+
+    const minWidth = this._getResponsiveStyle(this.minWidth);
+    if (minWidth) styles.minWidth = minWidth;
+
+    const minHeight = this._getResponsiveStyle(this.minHeight);
+    if (minHeight) styles.minHeight = minHeight;
+
+    const maxWidth = this._getResponsiveStyle(this.maxWidth);
+    if (maxWidth) styles.maxWidth = maxWidth;
+
+    const maxHeight = this._getResponsiveStyle(this.maxHeight);
+    if (maxHeight) styles.maxHeight = maxHeight;
+
+    // Visual properties (override theme defaults)
+    const bgcolor = this._getResponsiveStyle(this.bgcolor);
+    if (bgcolor) styles.backgroundColor = bgcolor;
+
+    const color = this._getResponsiveStyle(this.color);
+    if (color) styles.color = color;
+
+    const border = this._getResponsiveStyle(this.border);
+    if (border) styles.border = border;
+
+    const customBorderRadius = this._getResponsiveStyle(
+      this.customBorderRadius,
     );
+    if (customBorderRadius) styles.borderRadius = customBorderRadius;
+
+    const boxShadow = this._getResponsiveStyle(this.boxShadow);
+    if (boxShadow) styles.boxShadow = boxShadow;
+
+    const overflow = this._getResponsiveStyle(this.overflow);
+    if (overflow) styles.overflow = overflow;
+
+    return styles;
   }
 
-  private _handleKeyDown(event: KeyboardEvent) {
-    if (this.disabled) return;
+  // Form integration methods
+  get form() {
+    return this._internals.form;
+  }
 
-    if (this.interactive && (event.key === 'Enter' || event.key === ' ')) {
-      event.preventDefault();
-      this._handleClick(event as any);
+  get validity() {
+    return this._internals.validity;
+  }
+
+  get validationMessage() {
+    return this._internals.validationMessage;
+  }
+
+  checkValidity() {
+    return this._internals.checkValidity();
+  }
+
+  reportValidity() {
+    return this._internals.reportValidity();
+  }
+
+  // Public methods
+  focus(options?: FocusOptions) {
+    if (this.interactive) {
+      (this.shadowRoot?.querySelector('.box') as HTMLElement)?.focus(options);
     }
+  }
 
-    this.dispatchEvent(
-      new CustomEvent('box-keydown', {
-        detail: { originalEvent: event },
-        bubbles: true,
-        composed: true,
-      }),
-    );
+  blur() {
+    if (this.interactive) {
+      (this.shadowRoot?.querySelector('.box') as HTMLElement)?.blur();
+    }
   }
 
   protected render() {
+    const dynamicStyles = this._buildDynamicStyles();
+
     const classes = {
-      interactive: this.interactive && !this.disabled,
-      disabled: this.disabled,
+      box: true,
+      [`box--size-${this.size}`]: true,
+      [`box--variant-${this.variant}`]: true,
+      [`box--elevation-${this.elevation}`]: true,
+      [`box--radius-${this.borderRadius}`]: true,
+      'box--interactive': this.interactive,
+      'box--disabled': this.disabled,
+      'box--loading': this.loading,
+      [`box--state-${this._currentState}`]: this.interactive,
     };
 
     return html`
       <div
-        class="content ${classMap(classes)}"
-        style=${styleMap(this._computedStyles)}
-        role=${this.role || (this.interactive ? 'button' : 'presentation')}
-        aria-label=${this.ariaLabel || ''}
-        aria-labelledby=${this.ariaLabelledBy || ''}
-        aria-describedby=${this.ariaDescribedBy || ''}
-        aria-disabled=${this.disabled}
-        tabindex=${this.interactive ? '0' : '-1'}
-        @click=${this._handleClick}
-        @keydown=${this._handleKeyDown}
+        class=${classMap(classes)}
+        style=${styleMap(dynamicStyles)}
+        role=${ifDefined(
+          this.role || (this.interactive ? 'button' : undefined),
+        )}
+        aria-label=${ifDefined(this.ariaLabel)}
+        aria-labelledby=${ifDefined(this.ariaLabelledby)}
+        aria-describedby=${ifDefined(this.ariaDescribedby)}
+        aria-disabled=${this.disabled ? 'true' : 'false'}
+        tabindex=${ifDefined(
+          this.interactive
+            ? this.tabIndex >= 0
+              ? this.tabIndex
+              : 0
+            : undefined,
+        )}
       >
         <slot></slot>
       </div>
