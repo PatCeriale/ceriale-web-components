@@ -1,6 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/web-components';
 import { html } from 'lit';
 import './button';
+import '../code-box/code-box';
+import '../icons/action-icons';
 
 const meta: Meta = {
   title: 'Components/Button',
@@ -60,165 +62,196 @@ export default meta;
 type Story = StoryObj;
 
 export const Default: Story = {
-  args: {},
-  render: (args) => html`
-    <mwc-button
-      variant="${args.variant}"
-      size="${args.size}"
-      color="${args.color}"
-      ?disabled="${args.disabled}"
-      ?loading="${args.loading}"
-      href="${args.href || ''}"
-      target="${args.target || ''}"
-    >
-      ${args.loading ? 'Loading...' : 'Click Me'}
-    </mwc-button>
-  `,
-};
-
-export const Variants: Story = {
   render: () => html`
-    <div style="display: flex; gap: 16px; flex-wrap: wrap;">
-      <mwc-button variant="contained">Contained</mwc-button>
-      <mwc-button variant="outlined">Outlined</mwc-button>
-      <mwc-button variant="text">Text</mwc-button>
-    </div>
-  `,
-  parameters: {
-    docs: {
-      description: {
-        story: 'Different visual variants of the button component.',
-      },
-    },
-  },
-};
+    <div style="max-width: 1200px; margin: 0 auto; padding: 20px;">
 
-export const Colors: Story = {
-  render: () => html`
-    <div
-      style="display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 16px;"
-    >
-      <mwc-button variant="contained" color="primary">Primary</mwc-button>
-      <mwc-button variant="contained" color="secondary">Secondary</mwc-button>
-      <mwc-button variant="contained" color="success">Success</mwc-button>
-      <mwc-button variant="contained" color="warning">Warning</mwc-button>
-      <mwc-button variant="contained" color="error">Error</mwc-button>
-    </div>
-    <div
-      style="display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 16px;"
-    >
-      <mwc-button variant="outlined" color="primary">Primary</mwc-button>
-      <mwc-button variant="outlined" color="secondary">Secondary</mwc-button>
-      <mwc-button variant="outlined" color="success">Success</mwc-button>
-      <mwc-button variant="outlined" color="warning">Warning</mwc-button>
-      <mwc-button variant="outlined" color="error">Error</mwc-button>
-    </div>
-    <div style="display: flex; gap: 16px; flex-wrap: wrap;">
-      <mwc-button variant="text" color="primary">Primary</mwc-button>
-      <mwc-button variant="text" color="secondary">Secondary</mwc-button>
-      <mwc-button variant="text" color="success">Success</mwc-button>
-      <mwc-button variant="text" color="warning">Warning</mwc-button>
-      <mwc-button variant="text" color="error">Error</mwc-button>
-    </div>
-  `,
-  parameters: {
-    docs: {
-      description: {
-        story: 'Buttons in different semantic colors across all variants.',
-      },
-    },
-  },
-};
+      <!-- Basic Usage Section -->
+      <section style="margin-bottom: 48px;">
+        <h2 style="color: var(--color-neutral-800, #424242); margin-bottom: 16px; font-size: 1.75rem; font-weight: 600;">Basic Usage</h2>
+        <div style="margin-bottom: 24px;">
+          <mwc-button variant="contained">Click Me</mwc-button>
+        </div>
+        <mwc-code-box
+          title="Simple button"
+          code='<mwc-button variant="contained">Click Me</mwc-button>'
+          language="html"
+        ></mwc-code-box>
+      </section>
 
-export const Sizes: Story = {
-  render: () => html`
-    <div
-      style="display: flex; gap: 16px; align-items: center; flex-wrap: wrap;"
-    >
-      <mwc-button size="small" variant="contained">Small</mwc-button>
-      <mwc-button size="medium" variant="contained">Medium</mwc-button>
-      <mwc-button size="large" variant="contained">Large</mwc-button>
-    </div>
-  `,
-  parameters: {
-    docs: {
-      description: {
-        story: 'Different sizes of buttons for various use cases.',
-      },
-    },
-  },
-};
+      <!-- Variants Section -->
+      <section style="margin-bottom: 48px;">
+        <h2 style="color: var(--color-neutral-800, #424242); margin-bottom: 16px; font-size: 1.75rem; font-weight: 600;">Variants</h2>
+        <div style="margin-bottom: 24px;">
+          <div style="display: flex; gap: 16px; flex-wrap: wrap;">
+            <mwc-button variant="contained">Contained</mwc-button>
+            <mwc-button variant="outlined">Outlined</mwc-button>
+            <mwc-button variant="text">Text</mwc-button>
+          </div>
+        </div>
+        <mwc-code-box
+          title="Button variants"
+          code='<div style="display: flex; gap: 16px; flex-wrap: wrap;">
+  <mwc-button variant="contained">Contained</mwc-button>
+  <mwc-button variant="outlined">Outlined</mwc-button>
+  <mwc-button variant="text">Text</mwc-button>
+</div>'
+          language="html"
+        ></mwc-code-box>
+      </section>
 
-export const States: Story = {
-  render: () => html`
-    <div
-      style="display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 16px;"
-    >
-      <mwc-button variant="contained">Default</mwc-button>
-      <mwc-button variant="contained" disabled>Disabled</mwc-button>
-      <mwc-button variant="contained" loading>Loading</mwc-button>
-    </div>
-    <div style="display: flex; gap: 16px; flex-wrap: wrap;">
-      <mwc-button variant="outlined">Default</mwc-button>
-      <mwc-button variant="outlined" disabled>Disabled</mwc-button>
-      <mwc-button variant="outlined" loading>Loading</mwc-button>
-    </div>
-  `,
-  parameters: {
-    docs: {
-      description: {
-        story: 'Different states including disabled and loading.',
-      },
-    },
-  },
-};
+      <!-- Colors Section -->
+      <section style="margin-bottom: 48px;">
+        <h2 style="color: var(--color-neutral-800, #424242); margin-bottom: 16px; font-size: 1.75rem; font-weight: 600;">Colors</h2>
+        <div style="margin-bottom: 24px;">
+          <div style="display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 16px;">
+            <mwc-button variant="contained" color="primary">Primary</mwc-button>
+            <mwc-button variant="contained" color="secondary">Secondary</mwc-button>
+            <mwc-button variant="contained" color="success">Success</mwc-button>
+            <mwc-button variant="contained" color="warning">Warning</mwc-button>
+            <mwc-button variant="contained" color="error">Error</mwc-button>
+          </div>
+          <div style="display: flex; gap: 16px; flex-wrap: wrap;">
+            <mwc-button variant="outlined" color="primary">Primary</mwc-button>
+            <mwc-button variant="outlined" color="secondary">Secondary</mwc-button>
+            <mwc-button variant="outlined" color="success">Success</mwc-button>
+            <mwc-button variant="outlined" color="warning">Warning</mwc-button>
+            <mwc-button variant="outlined" color="error">Error</mwc-button>
+          </div>
+        </div>
+        <mwc-code-box
+          title="Button colors"
+          code='<!-- Contained buttons -->
+<mwc-button variant="contained" color="primary">Primary</mwc-button>
+<mwc-button variant="contained" color="secondary">Secondary</mwc-button>
+<mwc-button variant="contained" color="success">Success</mwc-button>
+<mwc-button variant="contained" color="warning">Warning</mwc-button>
+<mwc-button variant="contained" color="error">Error</mwc-button>
 
-export const AsLink: Story = {
-  args: {
-    href: 'https://google.com',
-    target: '_blank',
-  },
-  render: (args) => html`
-    <mwc-button
-      variant="${args.variant}"
-      color="${args.color}"
-      href="${args.href}"
-      target="${args.target}"
-    >
-      Visit Google
-    </mwc-button>
-  `,
-  parameters: {
-    docs: {
-      description: {
-        story: 'Button rendered as an anchor link when href prop is provided.',
-      },
-    },
-  },
-};
+<!-- Outlined buttons -->
+<mwc-button variant="outlined" color="primary">Primary</mwc-button>
+<mwc-button variant="outlined" color="secondary">Secondary</mwc-button>
+<!-- ... other colors -->'
+          language="html"
+        ></mwc-code-box>
+      </section>
 
-export const Interactive: Story = {
-  render: () => html`
-    <div style="display: flex; gap: 16px; flex-wrap: wrap;">
-      <mwc-button
-        variant="contained"
-        @mwc-button-click="${() => alert('Button clicked!')}"
-      >
-        Alert on Click
-      </mwc-button>
-      <mwc-button
-        variant="outlined"
-        @mwc-button-click="${(e: Event) => console.log('Button event:', e)}"
-      >
-        Log to Console
-      </mwc-button>
+      <!-- Sizes Section -->
+      <section style="margin-bottom: 48px;">
+        <h2 style="color: var(--color-neutral-800, #424242); margin-bottom: 16px; font-size: 1.75rem; font-weight: 600;">Sizes</h2>
+        <div style="margin-bottom: 24px;">
+          <div style="display: flex; gap: 16px; align-items: center; flex-wrap: wrap;">
+            <mwc-button size="small" variant="contained">Small</mwc-button>
+            <mwc-button size="medium" variant="contained">Medium</mwc-button>
+            <mwc-button size="large" variant="contained">Large</mwc-button>
+          </div>
+        </div>
+        <mwc-code-box
+          title="Button sizes"
+          code='<mwc-button size="small" variant="contained">Small</mwc-button>
+<mwc-button size="medium" variant="contained">Medium</mwc-button>
+<mwc-button size="large" variant="contained">Large</mwc-button>'
+          language="html"
+        ></mwc-code-box>
+      </section>
+
+      <!-- States Section -->
+      <section style="margin-bottom: 48px;">
+        <h2 style="color: var(--color-neutral-800, #424242); margin-bottom: 16px; font-size: 1.75rem; font-weight: 600;">States</h2>
+        <div style="margin-bottom: 24px;">
+          <div style="display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 16px;">
+            <mwc-button variant="contained">Default</mwc-button>
+            <mwc-button variant="contained" disabled>Disabled</mwc-button>
+            <mwc-button variant="contained" loading>Loading</mwc-button>
+          </div>
+          <div style="display: flex; gap: 16px; flex-wrap: wrap;">
+            <mwc-button variant="outlined">Default</mwc-button>
+            <mwc-button variant="outlined" disabled>Disabled</mwc-button>
+            <mwc-button variant="outlined" loading>Loading</mwc-button>
+          </div>
+        </div>
+        <mwc-code-box
+          title="Button states"
+          code='<!-- Default state -->
+<mwc-button variant="contained">Default</mwc-button>
+
+<!-- Disabled state -->
+<mwc-button variant="contained" disabled>Disabled</mwc-button>
+
+<!-- Loading state -->
+<mwc-button variant="contained" loading>Loading</mwc-button>'
+          language="html"
+        ></mwc-code-box>
+      </section>
+
+      <!-- Interactive Section -->
+      <section style="margin-bottom: 48px;">
+        <h2 style="color: var(--color-neutral-800, #424242); margin-bottom: 16px; font-size: 1.75rem; font-weight: 600;">Event Handling</h2>
+        <div style="margin-bottom: 24px;">
+          <div style="display: flex; gap: 16px; flex-wrap: wrap;">
+            <mwc-button
+              variant="contained"
+              @mwc-button-click="${() => alert('Button clicked!')}"
+            >
+              Alert on Click
+            </mwc-button>
+            <mwc-button
+              variant="outlined"
+              @mwc-button-click="${(e: Event) =>
+                console.log('Button event:', e)}"
+            >
+              Log to Console
+            </mwc-button>
+          </div>
+        </div>
+        <mwc-code-box
+          title="Event handling"
+          code='<!-- Using onclick -->
+<mwc-button 
+  variant="contained" 
+  onclick="alert(\'Button clicked!\')"
+>
+  Alert on Click
+</mwc-button>
+
+<!-- Using event listener -->
+<mwc-button id="my-button" variant="outlined">
+  Log to Console
+</mwc-button>
+
+<script>
+  document.getElementById("my-button")
+    .addEventListener("mwc-button-click", (event) => {
+      console.log("Button clicked!", event);
+    });
+</script>'
+          language="html"
+        ></mwc-code-box>
+      </section>
+
+      <!-- As Link Section -->
+      <section style="margin-bottom: 48px;">
+        <h2 style="color: var(--color-neutral-800, #424242); margin-bottom: 16px; font-size: 1.75rem; font-weight: 600;">As Link</h2>
+        <div style="margin-bottom: 24px;">
+          <mwc-button
+            variant="outlined"
+            href="https://example.com"
+            target="_blank"
+          >
+            Visit Website
+          </mwc-button>
+        </div>
+        <mwc-code-box
+          title="Button as link"
+          code='<mwc-button 
+  variant="outlined" 
+  href="https://example.com"
+  target="_blank"
+>
+  Visit Website
+</mwc-button>'
+          language="html"
+        ></mwc-code-box>
+      </section>
     </div>
   `,
-  parameters: {
-    docs: {
-      description: {
-        story: 'Interactive examples showing event handling.',
-      },
-    },
-  },
 };

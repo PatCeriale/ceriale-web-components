@@ -1,6 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/web-components';
 import { html } from 'lit';
 import './input';
+import '../code-box/code-box';
+import '../icons/status-icons';
 
 const meta: Meta = {
   title: 'Components/Input',
@@ -84,337 +86,528 @@ export default meta;
 type Story = StoryObj;
 
 export const Default: Story = {
-  args: {},
-  render: (args) => html`
-    <mwc-input
-      variant="${args.variant}"
-      size="${args.size}"
-      type="${args.type}"
-      label="${args.label}"
-      placeholder="${args.placeholder}"
-      value="${args.value}"
-      helper-text="${args.helperText || ''}"
-      error-text="${args.errorText || ''}"
-      ?required="${args.required}"
-      ?disabled="${args.disabled}"
-      ?readonly="${args.readonly}"
-      ?error="${args.error}"
-    ></mwc-input>
-  `,
-};
-
-export const Variants: Story = {
   render: () => html`
-    <div style="display: grid; gap: 24px; max-width: 400px;">
-      <mwc-input
-        variant="outlined"
-        label="Outlined Input"
-        placeholder="Enter text..."
-        helper-text="This is an outlined input variant"
-      ></mwc-input>
+    <div style="max-width: 1200px; margin: 0 auto; padding: 20px;">
+      <!-- Basic Usage Section -->
+      <section style="margin-bottom: 48px;">
+        <h2
+          style="color: var(--color-neutral-800, #424242); margin-bottom: 16px; font-size: 1.75rem; font-weight: 600;"
+        >
+          Basic Usage
+        </h2>
+        <div style="margin-bottom: 24px; max-width: 400px;">
+          <mwc-input
+            variant="outlined"
+            label="Email Address"
+            placeholder="your.email@example.com"
+            helper-text="We'll never share your email with anyone else"
+          ></mwc-input>
+        </div>
+        <mwc-code-box
+          title="Simple input field"
+          code='<mwc-input
+  variant="outlined"
+  label="Email Address"
+  placeholder="your.email@example.com"
+  helper-text="We&rsquo;ll never share your email with anyone else"
+></mwc-input>'
+          language="html"
+        ></mwc-code-box>
+      </section>
 
-      <mwc-input
-        variant="filled"
-        label="Filled Input"
-        placeholder="Enter text..."
-        helper-text="This is a filled input variant"
-      ></mwc-input>
+      <!-- Variants Section -->
+      <section style="margin-bottom: 48px;">
+        <h2
+          style="color: var(--color-neutral-800, #424242); margin-bottom: 16px; font-size: 1.75rem; font-weight: 600;"
+        >
+          Variants
+        </h2>
+        <div style="margin-bottom: 24px;">
+          <div style="display: grid; gap: 24px; max-width: 600px;">
+            <mwc-input
+              variant="outlined"
+              label="Outlined Input"
+              placeholder="Enter text..."
+              helper-text="Clear border definition with floating label"
+            ></mwc-input>
 
-      <mwc-input
-        variant="standard"
-        label="Standard Input"
-        placeholder="Enter text..."
-        helper-text="This is a standard input variant"
-      ></mwc-input>
+            <mwc-input
+              variant="filled"
+              label="Filled Input"
+              placeholder="Enter text..."
+              helper-text="Subtle background fill for form grouping"
+            ></mwc-input>
+
+            <mwc-input
+              variant="standard"
+              label="Standard Input"
+              placeholder="Enter text..."
+              helper-text="Minimal underline design for clean interfaces"
+            ></mwc-input>
+          </div>
+        </div>
+        <mwc-code-box
+          title="Input variants"
+          code='<!-- Outlined variant (default) -->
+<mwc-input
+  variant="outlined"
+  label="Outlined Input"
+  placeholder="Enter text..."
+  helper-text="Clear border definition with floating label"
+></mwc-input>
+
+<!-- Filled variant -->
+<mwc-input
+  variant="filled"
+  label="Filled Input"
+  placeholder="Enter text..."
+  helper-text="Subtle background fill for form grouping"
+></mwc-input>
+
+<!-- Standard variant -->
+<mwc-input
+  variant="standard"
+  label="Standard Input"
+  placeholder="Enter text..."
+  helper-text="Minimal underline design for clean interfaces"
+></mwc-input>'
+          language="html"
+        ></mwc-code-box>
+      </section>
+
+      <!-- Input Types Section -->
+      <section style="margin-bottom: 48px;">
+        <h2
+          style="color: var(--color-neutral-800, #424242); margin-bottom: 16px; font-size: 1.75rem; font-weight: 600;"
+        >
+          Input Types
+        </h2>
+        <div style="margin-bottom: 24px;">
+          <div
+            style="display: grid; gap: 16px; max-width: 500px; grid-template-columns: 1fr 1fr;"
+          >
+            <mwc-input
+              type="text"
+              label="Text"
+              placeholder="Any text"
+              helper-text="Standard text input"
+            ></mwc-input>
+
+            <mwc-input
+              type="email"
+              label="Email"
+              placeholder="user@example.com"
+              helper-text="Email validation"
+            ></mwc-input>
+
+            <mwc-input
+              type="password"
+              label="Password"
+              placeholder="Secure password"
+              helper-text="Masked input"
+            ></mwc-input>
+
+            <mwc-input
+              type="number"
+              label="Number"
+              placeholder="123"
+              helper-text="Numeric only"
+            ></mwc-input>
+
+            <mwc-input
+              type="tel"
+              label="Phone"
+              placeholder="+1 (555) 123-4567"
+              helper-text="Phone number"
+            ></mwc-input>
+
+            <mwc-input
+              type="url"
+              label="Website"
+              placeholder="https://example.com"
+              helper-text="URL validation"
+            ></mwc-input>
+          </div>
+        </div>
+        <mwc-code-box
+          title="Different HTML input types"
+          code='<!-- Text input -->
+<mwc-input type="text" label="Text" placeholder="Any text"></mwc-input>
+
+<!-- Email with validation -->
+<mwc-input type="email" label="Email" placeholder="user@example.com"></mwc-input>
+
+<!-- Password with masking -->
+<mwc-input type="password" label="Password" placeholder="Secure password"></mwc-input>
+
+<!-- Number input -->
+<mwc-input type="number" label="Number" placeholder="123"></mwc-input>
+
+<!-- Phone number -->
+<mwc-input type="tel" label="Phone" placeholder="+1 (555) 123-4567"></mwc-input>
+
+<!-- URL with validation -->
+<mwc-input type="url" label="Website" placeholder="https://example.com"></mwc-input>'
+          language="html"
+        ></mwc-code-box>
+      </section>
+
+      <!-- Sizes Section -->
+      <section style="margin-bottom: 48px;">
+        <h2
+          style="color: var(--color-neutral-800, #424242); margin-bottom: 16px; font-size: 1.75rem; font-weight: 600;"
+        >
+          Sizes
+        </h2>
+        <div style="margin-bottom: 24px;">
+          <div style="display: grid; gap: 16px; max-width: 400px;">
+            <mwc-input
+              size="small"
+              label="Small Input"
+              placeholder="Compact input"
+              helper-text="For tight spaces and dense layouts"
+            ></mwc-input>
+
+            <mwc-input
+              size="medium"
+              label="Medium Input"
+              placeholder="Standard input"
+              helper-text="Default size for most use cases"
+            ></mwc-input>
+
+            <mwc-input
+              size="large"
+              label="Large Input"
+              placeholder="Prominent input"
+              helper-text="For emphasis and mobile interfaces"
+            ></mwc-input>
+          </div>
+        </div>
+        <mwc-code-box
+          title="Input sizes"
+          code='<!-- Small size -->
+<mwc-input
+  size="small"
+  label="Small Input"
+  placeholder="Compact input"
+  helper-text="For tight spaces and dense layouts"
+></mwc-input>
+
+<!-- Medium size (default) -->
+<mwc-input
+  size="medium"
+  label="Medium Input"
+  placeholder="Standard input"
+  helper-text="Default size for most use cases"
+></mwc-input>
+
+<!-- Large size -->
+<mwc-input
+  size="large"
+  label="Large Input"
+  placeholder="Prominent input"
+  helper-text="For emphasis and mobile interfaces"
+></mwc-input>'
+          language="html"
+        ></mwc-code-box>
+      </section>
+
+      <!-- States Section -->
+      <section style="margin-bottom: 48px;">
+        <h2
+          style="color: var(--color-neutral-800, #424242); margin-bottom: 16px; font-size: 1.75rem; font-weight: 600;"
+        >
+          States
+        </h2>
+        <div style="margin-bottom: 24px;">
+          <div
+            style="display: grid; gap: 16px; max-width: 500px; grid-template-columns: 1fr 1fr;"
+          >
+            <mwc-input
+              label="Normal State"
+              placeholder="Regular input"
+              helper-text="Standard interactive input"
+            ></mwc-input>
+
+            <mwc-input
+              label="Required Field"
+              placeholder="Required input"
+              required
+              helper-text="This field is required"
+            ></mwc-input>
+
+            <mwc-input
+              label="Disabled Input"
+              placeholder="Cannot edit"
+              value="Disabled value"
+              disabled
+              helper-text="Input is disabled"
+            ></mwc-input>
+
+            <mwc-input
+              label="Read-only Input"
+              value="Read-only value"
+              readonly
+              helper-text="Input is read-only"
+            ></mwc-input>
+
+            <mwc-input
+              label="Error State"
+              placeholder="Enter valid email"
+              value="invalid-email"
+              error
+              error-text="Please enter a valid email address"
+            ></mwc-input>
+
+            <mwc-input
+              label="With Value"
+              value="Pre-filled value"
+              helper-text="Input with existing value"
+            ></mwc-input>
+          </div>
+        </div>
+        <mwc-code-box
+          title="Input states"
+          code='<!-- Normal state -->
+<mwc-input label="Normal State" placeholder="Regular input"></mwc-input>
+
+<!-- Required field -->
+<mwc-input label="Required Field" required helper-text="This field is required"></mwc-input>
+
+<!-- Disabled state -->
+<mwc-input label="Disabled Input" value="Disabled value" disabled></mwc-input>
+
+<!-- Read-only state -->
+<mwc-input label="Read-only Input" value="Read-only value" readonly></mwc-input>
+
+<!-- Error state -->
+<mwc-input 
+  label="Error State" 
+  value="invalid-email" 
+  error 
+  error-text="Please enter a valid email address"
+></mwc-input>'
+          language="html"
+        ></mwc-code-box>
+      </section>
+
+      <!-- Validation Section -->
+      <section style="margin-bottom: 48px;">
+        <h2
+          style="color: var(--color-neutral-800, #424242); margin-bottom: 16px; font-size: 1.75rem; font-weight: 600;"
+        >
+          Form Validation
+        </h2>
+        <div style="margin-bottom: 24px;">
+          <form
+            style="display: grid; gap: 16px; max-width: 400px; padding: 24px; background: var(--color-grey-50); border-radius: 8px;"
+            @submit="${(e: Event) => {
+              e.preventDefault();
+              const formData = new FormData(e.target as HTMLFormElement);
+              console.log('Form data:', Object.fromEntries(formData));
+              alert('Form submitted! Check console for data.');
+            }}"
+          >
+            <h4 style="margin: 0 0 8px; color: var(--color-neutral-700);">
+              User Registration
+            </h4>
+
+            <mwc-input
+              name="username"
+              label="Username"
+              placeholder="Choose username"
+              required
+              helper-text="Must be at least 3 characters"
+            ></mwc-input>
+
+            <mwc-input
+              name="email"
+              type="email"
+              label="Email Address"
+              placeholder="your.email@example.com"
+              required
+              helper-text="We'll never share your email"
+            ></mwc-input>
+
+            <mwc-input
+              name="phone"
+              type="tel"
+              label="Phone Number"
+              placeholder="+1 (555) 123-4567"
+              helper-text="Optional field for account recovery"
+            ></mwc-input>
+
+            <button
+              type="submit"
+              style="padding: 12px; border: none; border-radius: 4px; background: var(--color-primary-500); color: white; cursor: pointer; font-weight: 500;"
+            >
+              Create Account
+            </button>
+          </form>
+        </div>
+        <mwc-code-box
+          title="Form with validation"
+          code='<form @submit="handleSubmit">
+  <mwc-input
+    name="username"
+    label="Username"
+    placeholder="Choose username"
+    required
+    helper-text="Must be at least 3 characters"
+  ></mwc-input>
+
+  <mwc-input
+    name="email"
+    type="email"
+    label="Email Address"
+    placeholder="your.email@example.com"
+    required
+    helper-text="We&rsquo;ll never share your email"
+  ></mwc-input>
+
+  <button type="submit">Create Account</button>
+</form>
+
+<script>
+function handleSubmit(e) {
+  e.preventDefault();
+  const formData = new FormData(e.target);
+  console.log("Form data:", Object.fromEntries(formData));
+}
+</script>'
+          language="html"
+        ></mwc-code-box>
+      </section>
+
+      <!-- Interactive Examples Section -->
+      <section style="margin-bottom: 48px;">
+        <h2
+          style="color: var(--color-neutral-800, #424242); margin-bottom: 16px; font-size: 1.75rem; font-weight: 600;"
+        >
+          Interactive Examples
+        </h2>
+        <div style="margin-bottom: 24px;">
+          <div style="display: grid; gap: 20px; max-width: 500px;">
+            <div
+              style="padding: 16px; background: var(--color-grey-50); border-radius: 8px;"
+            >
+              <h4 style="margin: 0 0 12px; color: var(--color-neutral-700);">
+                Real-time Character Count
+              </h4>
+              <mwc-input
+                label="Character Counter"
+                placeholder="Type to see count..."
+                helper-text="0 characters entered"
+                @mwc-input="${(e: CustomEvent) => {
+                  const input = e.target as any;
+                  const length = e.detail.value.length;
+                  if (input?.setAttribute) {
+                    input.setAttribute(
+                      'helper-text',
+                      `${length} characters entered`,
+                    );
+                  }
+                }}"
+              ></mwc-input>
+            </div>
+
+            <div
+              style="padding: 16px; background: var(--color-grey-50); border-radius: 8px;"
+            >
+              <h4 style="margin: 0 0 12px; color: var(--color-neutral-700);">
+                Live Email Validation
+              </h4>
+              <mwc-input
+                label="Email Validation"
+                type="email"
+                placeholder="Enter email address"
+                helper-text="Email format will be validated as you type"
+                @mwc-input="${(e: CustomEvent) => {
+                  const input = e.target as any;
+                  const value = e.detail.value;
+                  const isValid = /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(value);
+
+                  if (input && value && !isValid) {
+                    input.error = true;
+                    input.setAttribute(
+                      'error-text',
+                      'Please enter a valid email address',
+                    );
+                  } else if (input) {
+                    input.error = false;
+                    input.setAttribute('error-text', '');
+                    input.setAttribute(
+                      'helper-text',
+                      value && isValid
+                        ? 'Valid email format! ✓'
+                        : 'Email format will be validated as you type',
+                    );
+                  }
+                }}"
+              ></mwc-input>
+            </div>
+
+            <div
+              style="padding: 16px; background: var(--color-grey-50); border-radius: 8px;"
+            >
+              <h4 style="margin: 0 0 12px; color: var(--color-neutral-700);">
+                Enter Key Handler
+              </h4>
+              <mwc-input
+                label="Quick Submit"
+                placeholder="Press Enter to submit"
+                helper-text="Press Enter key to trigger action"
+                @mwc-enter="${(e: CustomEvent) => {
+                  if (e.detail.value.trim()) {
+                    alert(`You entered: ${e.detail.value}`);
+                  }
+                }}"
+              ></mwc-input>
+            </div>
+          </div>
+        </div>
+        <mwc-code-box
+          title="Interactive event handling"
+          code='<!-- Character counter -->
+<mwc-input
+  label="Character Counter"
+  placeholder="Type to see count..."
+  @mwc-input="handleInput"
+></mwc-input>
+
+<!-- Email validation -->
+<mwc-input
+  label="Email Validation"
+  type="email"
+  placeholder="Enter email address"
+  @mwc-input="validateEmail"
+></mwc-input>
+
+<!-- Enter key handler -->
+<mwc-input
+  label="Quick Submit"
+  placeholder="Press Enter to submit"
+  @mwc-enter="handleEnterKey"
+></mwc-input>
+
+<script>
+function handleInput(e) {
+  const length = e.detail.value.length;
+  e.target.setAttribute("helper-text", length + " characters entered");
+}
+
+function validateEmail(e) {
+  const isValid = /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(e.detail.value);
+  e.target.error = !isValid && e.detail.value;
+}
+
+function handleEnterKey(e) {
+  alert("You entered: " + e.detail.value);
+}
+</script>'
+          language="html"
+        ></mwc-code-box>
+      </section>
     </div>
   `,
-  parameters: {
-    docs: {
-      description: {
-        story: 'Different visual variants of the input component.',
-      },
-    },
-  },
-};
-
-export const InputTypes: Story = {
-  render: () => html`
-    <div style="display: grid; gap: 16px; max-width: 400px;">
-      <mwc-input
-        type="text"
-        label="Text Input"
-        placeholder="Enter any text"
-        helper-text="Standard text input"
-      ></mwc-input>
-
-      <mwc-input
-        type="email"
-        label="Email"
-        placeholder="your.email@example.com"
-        helper-text="Email validation will be applied"
-      ></mwc-input>
-
-      <mwc-input
-        type="password"
-        label="Password"
-        placeholder="Enter secure password"
-        helper-text="Password will be masked"
-      ></mwc-input>
-
-      <mwc-input
-        type="number"
-        label="Number"
-        placeholder="123"
-        helper-text="Only numeric values allowed"
-      ></mwc-input>
-
-      <mwc-input
-        type="tel"
-        label="Phone"
-        placeholder="+1 (555) 123-4567"
-        helper-text="Phone number input"
-      ></mwc-input>
-
-      <mwc-input
-        type="url"
-        label="Website"
-        placeholder="https://example.com"
-        helper-text="URL validation will be applied"
-      ></mwc-input>
-
-      <mwc-input
-        type="search"
-        label="Search"
-        placeholder="Search for something..."
-        helper-text="Search input with special styling"
-      ></mwc-input>
-    </div>
-  `,
-  parameters: {
-    docs: {
-      description: {
-        story: 'Different HTML input types supported by the component.',
-      },
-    },
-  },
-};
-
-export const Sizes: Story = {
-  render: () => html`
-    <div style="display: grid; gap: 16px; max-width: 400px;">
-      <mwc-input
-        size="small"
-        label="Small Input"
-        placeholder="Small size input"
-        helper-text="Compact input for tight spaces"
-      ></mwc-input>
-
-      <mwc-input
-        size="medium"
-        label="Medium Input"
-        placeholder="Medium size input"
-        helper-text="Standard size for most use cases"
-      ></mwc-input>
-
-      <mwc-input
-        size="large"
-        label="Large Input"
-        placeholder="Large size input"
-        helper-text="Larger input for emphasis and mobile"
-      ></mwc-input>
-    </div>
-  `,
-  parameters: {
-    docs: {
-      description: {
-        story: 'Different sizes of input fields for various use cases.',
-      },
-    },
-  },
-};
-
-export const States: Story = {
-  render: () => html`
-    <div style="display: grid; gap: 16px; max-width: 400px;">
-      <mwc-input
-        label="Normal State"
-        placeholder="Regular input"
-        helper-text="This is a normal input field"
-      ></mwc-input>
-
-      <mwc-input
-        label="Required Field"
-        placeholder="This field is required"
-        required
-        helper-text="This field is required"
-      ></mwc-input>
-
-      <mwc-input
-        label="Disabled Input"
-        placeholder="Cannot edit this"
-        value="Disabled value"
-        disabled
-        helper-text="This input is disabled"
-      ></mwc-input>
-
-      <mwc-input
-        label="Read-only Input"
-        placeholder="Cannot edit this"
-        value="Read-only value"
-        readonly
-        helper-text="This input is read-only"
-      ></mwc-input>
-
-      <mwc-input
-        label="Error State"
-        placeholder="Enter valid email"
-        value="invalid-email"
-        error
-        error-text="Please enter a valid email address"
-      ></mwc-input>
-
-      <mwc-input
-        label="With Value"
-        value="Pre-filled value"
-        helper-text="Input with existing value"
-      ></mwc-input>
-    </div>
-  `,
-  parameters: {
-    docs: {
-      description: {
-        story:
-          'Different states including required, disabled, read-only, and error states.',
-      },
-    },
-  },
-};
-
-export const Validation: Story = {
-  render: () => html`
-    <form
-      style="display: grid; gap: 16px; max-width: 400px;"
-      @submit="${(e: Event) => {
-        e.preventDefault();
-        const formData = new FormData(e.target as HTMLFormElement);
-        console.log('Form data:', Object.fromEntries(formData));
-        alert('Form submitted! Check console for data.');
-      }}"
-    >
-      <mwc-input
-        name="username"
-        label="Username"
-        placeholder="Enter username"
-        required
-        helper-text="Must be at least 3 characters"
-      ></mwc-input>
-
-      <mwc-input
-        name="email"
-        type="email"
-        label="Email Address"
-        placeholder="your.email@example.com"
-        required
-        helper-text="We'll never share your email"
-      ></mwc-input>
-
-      <mwc-input
-        name="phone"
-        type="tel"
-        label="Phone Number"
-        placeholder="+1 (555) 123-4567"
-        helper-text="Optional field"
-      ></mwc-input>
-
-      <mwc-input
-        name="website"
-        type="url"
-        label="Website"
-        placeholder="https://yoursite.com"
-        helper-text="Your personal or company website"
-      ></mwc-input>
-
-      <button
-        type="submit"
-        style="padding: 12px; margin-top: 8px; border: none; border-radius: 4px; background: var(--color-primary-500); color: white; cursor: pointer;"
-      >
-        Submit Form
-      </button>
-    </form>
-  `,
-  parameters: {
-    docs: {
-      description: {
-        story:
-          'Form validation example with required fields and different input types.',
-      },
-    },
-  },
-};
-
-export const Interactive: Story = {
-  render: () => html`
-    <div style="display: grid; gap: 16px; max-width: 400px;">
-      <mwc-input
-        label="Real-time Feedback"
-        placeholder="Type something..."
-        helper-text="Character count will appear as you type"
-        @mwc-input="${(e: CustomEvent) => {
-          const input = e.target as any;
-          const length = e.detail.value.length;
-          if (input?.setAttribute) {
-            input.setAttribute('helper-text', `${length} characters entered`);
-          }
-        }}"
-      ></mwc-input>
-
-      <mwc-input
-        label="Focus/Blur Events"
-        placeholder="Focus and blur this input"
-        helper-text="Watch the console for focus events"
-        @mwc-focus="${() => console.log('Input focused')}"
-        @mwc-blur="${() => console.log('Input blurred')}"
-      ></mwc-input>
-
-      <mwc-input
-        label="Enter Key Handler"
-        placeholder="Press Enter to submit"
-        helper-text="Press Enter to see alert"
-        @mwc-enter="${(e: CustomEvent) => {
-          alert(`You entered: ${e.detail.value}`);
-        }}"
-      ></mwc-input>
-
-      <mwc-input
-        label="Email Validation"
-        type="email"
-        placeholder="Enter email address"
-        helper-text="Email format validation"
-        @mwc-input="${(e: CustomEvent) => {
-          const input = e.target as any;
-          const value = e.detail.value;
-          const isValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
-
-          if (input && value && !isValid) {
-            input.error = true;
-            input.setAttribute(
-              'error-text',
-              'Please enter a valid email address',
-            );
-          } else if (input) {
-            input.error = false;
-            input.setAttribute('error-text', '');
-          }
-        }}"
-      ></mwc-input>
-    </div>
-  `,
-  parameters: {
-    docs: {
-      description: {
-        story:
-          'Interactive examples showing event handling and real-time validation.',
-      },
-    },
-  },
 };
