@@ -1,4 +1,4 @@
-import { LitElement, html, css, nothing } from 'lit';
+import { LitElement, html, css } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import { unsafeHTML } from 'lit/directives/unsafe-html.js';
 import { baseStyles } from '../../styles/base.js';
@@ -235,43 +235,6 @@ export class CodeBox extends LitElement {
     } finally {
       document.body.removeChild(textArea);
     }
-  }
-
-  /**
-   * Apply basic syntax highlighting for HTML
-   */
-  private _highlightHtml(code: string): string {
-    return (
-      code
-        // First, handle HTML comments
-        .replace(/(&lt;!--.*?--&gt;)/g, '<span class="html-comment">$1</span>')
-        // Handle opening and closing tags with attributes
-        .replace(
-          /(&lt;\/?)([a-zA-Z][a-zA-Z0-9-]*)((?:\s+[a-zA-Z][a-zA-Z0-9-]*(?:=(?:"[^"]*"|'[^']*'))?)*\s*)(\/?&gt;)/g,
-          (match, openBracket, tagName, attributes, closeBracket) => {
-            // Highlight the tag brackets and name
-            let result = `<span class="html-tag">${openBracket}${tagName}</span>`;
-
-            // Highlight attributes if they exist
-            if (attributes.trim()) {
-              const highlightedAttrs = attributes
-                .replace(
-                  /(\s+)([a-zA-Z][a-zA-Z0-9-]*)(=)(".*?"|'.*?')/g,
-                  '$1<span class="html-attribute">$2$3</span><span class="html-string">$4</span>',
-                )
-                .replace(
-                  /(\s+)([a-zA-Z][a-zA-Z0-9-]*)/g,
-                  '$1<span class="html-attribute">$2</span>',
-                );
-              result += highlightedAttrs;
-            }
-
-            // Highlight closing bracket
-            result += `<span class="html-tag">${closeBracket}</span>`;
-            return result;
-          },
-        )
-    );
   }
 
   /**

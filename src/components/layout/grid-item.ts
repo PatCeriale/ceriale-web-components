@@ -517,7 +517,7 @@ export class GridItem extends LitElement {
     if (typeof value === 'object' && value !== null) {
       const responsiveValue = value as Record<string, SpacingValue>;
       return Object.entries(responsiveValue)
-        .map(([key, val]) => getSpacingValue(val))
+        .map(([, val]) => getSpacingValue(val))
         .join(' ');
     }
     return getSpacingValue(value as SpacingValue);

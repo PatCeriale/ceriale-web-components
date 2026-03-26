@@ -1,5 +1,5 @@
 import { LitElement, html, css } from 'lit';
-import { customElement, property, state } from 'lit/decorators.js';
+import { customElement, property } from 'lit/decorators.js';
 
 @customElement('custom-modal')
 export class Modal extends LitElement {
@@ -7,8 +7,6 @@ export class Modal extends LitElement {
   @property({ type: String }) title = '';
   @property({ type: Boolean }) closeOnBackdrop = true;
   @property({ type: Boolean }) closeOnEscape = true;
-
-  @state() private _isAnimating = false;
 
   static styles = css`
     :host {
@@ -136,11 +134,8 @@ export class Modal extends LitElement {
   }
 
   public close() {
-    this._isAnimating = true;
     this.open = false;
-
     setTimeout(() => {
-      this._isAnimating = false;
       this.dispatchEvent(new CustomEvent('modal-close', { bubbles: true }));
     }, 300);
   }

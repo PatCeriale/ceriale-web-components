@@ -2,7 +2,7 @@ import { LitElement, html, css, CSSResultGroup } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
 import { styleMap } from 'lit/directives/style-map.js';
-import { ifDefined } from 'lit/directives/if-defined.js';
+
 import {
   LayoutSize,
   LayoutColor,
@@ -617,7 +617,7 @@ export class Grid extends LitElement {
     if (typeof value === 'object' && value !== null) {
       const responsiveValue = value as Record<string, SpacingValue>;
       return Object.entries(responsiveValue)
-        .map(([key, val]) => getSpacingValue(val))
+        .map(([, val]) => getSpacingValue(val))
         .join(' ');
     }
     return getSpacingValue(value as SpacingValue);

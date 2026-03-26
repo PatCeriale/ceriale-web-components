@@ -3,13 +3,10 @@ import { customElement, property } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
 import { styleMap } from 'lit/directives/style-map.js';
 import {
-  LayoutSize,
   LayoutColor,
   SpacingValue,
   ResponsiveValue,
-  Breakpoint,
   getSpacingValue,
-  breakpoints,
 } from './types.js';
 
 // Container size variants with max-widths
@@ -366,7 +363,7 @@ export class Container extends LitElement {
     if (typeof value === 'object' && value !== null) {
       const responsiveValue = value as Record<string, SpacingValue>;
       return Object.entries(responsiveValue)
-        .map(([key, val]) => getSpacingValue(val))
+        .map(([, val]) => getSpacingValue(val))
         .join(' ');
     }
     return getSpacingValue(value as SpacingValue);
@@ -411,12 +408,6 @@ export class Container extends LitElement {
       interactive: this.interactive && !this.disabled,
       disabled: this.disabled,
     };
-
-    // Determine semantic tag
-    let tag = 'div';
-    if (this.asSection) tag = 'section';
-    else if (this.asHeader) tag = 'header';
-    else if (this.asFooter) tag = 'footer';
 
     return html`
       <div
