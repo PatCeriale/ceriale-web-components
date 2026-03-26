@@ -6,6 +6,12 @@ A modern web component library built with Lit and common design principles. This
 
 This is a personal testing package. Use at your own risk in production.
 
+## 🚀 Component Playground
+
+**[View Component Playground →](https://patceriale.github.io/ceriale-web-components/)**
+
+Explore all components, variants, and interactive examples in our live Storybook documentation.
+
 ## Features
 
 - 🌗 **Dark/Light Theme** - Built-in theming support with CSS custom properties
@@ -69,6 +75,8 @@ import { applyTheme, darkTheme } from 'ceriale-web-components';
 // Apply dark theme
 applyTheme(darkTheme);
 ```
+
+**💡 Tip:** See all components in action with live examples at [our component playground](https://patceriale.github.io/ceriale-web-components/)!
 
 ## Components
 
@@ -253,6 +261,12 @@ npm run storybook
 4. Add tests for new functionality
 5. Run the test suite
 6. Submit a pull request
+
+## Resources
+
+- 🚀 **[Live Component Playground](https://patceriale.github.io/ceriale-web-components/)** - Interactive Storybook documentation
+- 📂 **[GitHub Repository](https://github.com/PatCeriale/ceriale-web-components)** - Source code and issues
+- 📦 **[npm Package](https://www.npmjs.com/package/ceriale-web-components)** - Installation and versions
 
 ## License
 
