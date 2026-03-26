@@ -8,7 +8,7 @@ This is a personal testing package. Use at your own risk in production.
 
 ## 🚀 Component Playground
 
-**[View Component Playground →](https://patceriale.github.io/ceriale-web-components/)**
+**<a href="https://patceriale.github.io/ceriale-web-components/" target="_blank">View Component Playground →</a>**
 
 Explore all components, variants, and interactive examples in our live Storybook documentation.
 
@@ -76,7 +76,7 @@ import { applyTheme, darkTheme } from 'ceriale-web-components';
 applyTheme(darkTheme);
 ```
 
-**💡 Tip:** See all components in action with live examples at [our component playground](https://patceriale.github.io/ceriale-web-components/)!
+**💡 Tip:** See all components in action with live examples at <a href="https://patceriale.github.io/ceriale-web-components/" target="_blank">our component playground</a>!
 
 ## Components
 
@@ -264,7 +264,7 @@ npm run storybook
 
 ## Resources
 
-- 🚀 **[Live Component Playground](https://patceriale.github.io/ceriale-web-components/)** - Interactive Storybook documentation
+- 🚀 **<a href="https://patceriale.github.io/ceriale-web-components/" target="_blank">Live Component Playground</a>** - Interactive Storybook documentation
 - 📂 **[GitHub Repository](https://github.com/PatCeriale/ceriale-web-components)** - Source code and issues
 - 📦 **[npm Package](https://www.npmjs.com/package/ceriale-web-components)** - Installation and versions
 
