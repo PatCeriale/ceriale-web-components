@@ -1,6 +1,6 @@
 {
   "name": "ceriale-web-components",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "A modern web component library built with Lit and TypeScript",
   "type": "module",
   "main": "dist/index.js",
